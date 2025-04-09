@@ -5,6 +5,7 @@ var unpopSound;
 var marioLeft;
 var marioRight;
 var assets = {};
+var gamestate = 'menu';
 
 function preload() {
     // TODO: Rename the assets to use hypenated names
@@ -42,6 +43,23 @@ function setup() {
 }
 
 function draw() {
+    switch (gamestate) {
+        case 'menu':
+            drawMenuScreen();
+            break;
+        case 'gameplay':
+            gamePlay();
+            break;
+        case 'menu':
+            winScreen();
+            break;
+        case 'gameplay':
+            loseScreen();
+            break;
+    }
+}
+
+function gamePlay(){
     background(51);
     text(frameRate(), 10, 10);
     //text(a, 30, 30);
