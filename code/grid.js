@@ -1,9 +1,9 @@
 class Grid {
 
-    constructor(width, height){
+    constructor(width, height, blockSize){
         this.width = width;
         this.height = height;
-        this.blockSize = 50;
+        this.blockSize = blockSize;
     }
 
     drawLine(x,y,x1,y1){

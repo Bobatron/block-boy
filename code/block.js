@@ -1,5 +1,5 @@
 class Block {
-    constructor(x, y){
+    constructor(x, y, blockSize){
         window.assets.sounds.popCreate.play();
         this.blockGreen = window.assets.images.blockGreen.get();
         this.blockRed = window.assets.images.blockRed.get();
@@ -7,7 +7,7 @@ class Block {
         this.x = x;
         this.y = y;
         this.location = x + ":" + y;
-        this.dimension = 52;
+        this.blockSize = blockSize;
     }
 
     getLocation(){
@@ -15,7 +15,7 @@ class Block {
     }
 
     draw(){
-        image(this.blockCurrent, this.x, this.y, this.dimension, this.dimension);
+        image(this.blockCurrent, this.x, this.y, this.blockSize, this.blockSize);
     }
 
     changeToRed(){

@@ -21,10 +21,10 @@ class Character {
         this.atRightWall = false;
         this.jumpKeyReleased = true;
 
-        this.marioLeft = new Sprite(window.marioLeft, 99, 99, 3, 1, 0.3, true, 1);
-        this.marioRight = new Sprite(window.marioRight, 99, 99, 3, 1, 0.3, true, 1);
-        this.marioStopLeft = new Sprite(window.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
-        this.marioStopRight = new Sprite(window.marioRight, 99, 99, 1, 1, 0.1, true, 0);
+        this.marioLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 3, 1, 0.3, true, 1);
+        this.marioRight = new Sprite(window.assets.images.marioRight, 99, 99, 3, 1, 0.3, true, 1);
+        this.marioStopLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
+        this.marioStopRight = new Sprite(window.assets.images.marioRight, 99, 99, 1, 1, 0.1, true, 0);
         this.marioDirection = [this.marioStopLeft, this.marioLeft];
 
         this.direction = "STOP";
