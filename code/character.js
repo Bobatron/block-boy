@@ -72,9 +72,13 @@ class Character {
 
     jump() {
         this.jumping = true;
-        this.currentValues.currentVelocity = this.parameters.jumpStrength * -1;
+        let baseJumpStrength = this.parameters.jumpStrength;
+        let maxJumpStrength = this.parameters.jumpStrength * 1.1;
+        let normalizedSpeed = Math.min(1, Math.abs(this.currentValues.xSpeed) / this.parameters.topSpeed); 
+        this.currentValues.currentVelocity = -1 * (baseJumpStrength + normalizedSpeed * (maxJumpStrength - baseJumpStrength));
         this.onGround = false;
     }
+    
 
     draw() {
         this.updateDebugValue();
