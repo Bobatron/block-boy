@@ -51,31 +51,16 @@ function gameplay() {
     //sideTab(width/10, height);
     blockManager.drawAll();
     grid.refresh();
-    for (var i = 0; i < blockManager.blocks.length; i++) {
-        // blocks[i].draw();
-        var collisionXPadding = 5;
-        if (!character.onGround && collideLineRect(blockManager.blocks[i].x + collisionXPadding, blockManager.blocks[i].y + 5, blockManager.blocks[i].x + blockManager.blocks[i].dimension - collisionXPadding, blockManager.blocks[i].y + 5, character.x + (character.width / 3), character.y + character.height, character.width / 3, 5)) {
-            character.y = blockManager.blocks[i].y;
-            character.hitGround(blockManager.blocks[i].y);
-            console.log("GROUND!");
-            //rect(character.x + (character.width/3), character.y + character.height, character.width/3, 10);
-        }
-        var collisionYPadding = 5;
-        if (collideLineRect(blockManager.blocks[i].x, blockManager.blocks[i].y + collisionYPadding, blockManager.blocks[i].x, blockManager.blocks[i].y + blockManager.blocks[i].dimension - collisionYPadding, character.x + (character.width / 1.5), character.y + character.height / 1.5, 5, character.height / 3) && (character.direction == "RIGHT" || character.direction == "STOP")) {
-            //character.x = blocks[i].x - (character.width/2);
-            character.hitLeftWall();
-            //rect(character.x + (character.width/1.5), character.y + character.height/1.5, 5, character.height/3);
-        }
-        if (collideLineRect(blockManager.blocks[i].x + blockManager.blocks[i].dimension, blockManager.blocks[i].y + collisionYPadding, blockManager.blocks[i].x + blockManager.blocks[i].dimension, blockManager.blocks[i].y + blockManager.blocks[i].dimension - collisionYPadding, character.x + (character.width / 3), character.y + character.height / 1.5, 5, character.height / 3) && (character.direction == "LEFT" || character.direction == "STOP")) {
-            //character.x = blocks[i].x + blocks[i].dimension + (character.width/2);
-            character.hitRightWall();
-            //rect(character.x + (character.width/1.5), character.y + character.height/1.5, 5, character.height/3);
-        }
+    for(let block of blockManager.blocks){
+        checkCollisionLeft(character, block);
+        checkCollisionRight(character, block);
+        checkCollisionDown(character, block);
+        checkCollisionUp(character, block);
     }
-    // TO SHOW CURRENT Y POS - HELPFUL FOR DEBUG
-    // console.log("Y POS: "+character.y);
-    if (character.y >= height - 100) {
-        character.hitGround();
+    
+    if (character.y > height - 100) {
+        console.log("HIT GROUND!");
+        character.hitGround(height - 100);
     }
     if (mouseIsPressed) {
         blockManager.addRemoveBlocks();

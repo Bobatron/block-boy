@@ -1,15 +1,19 @@
 class Character {
     constructor() {
+        // Start position
         this.x = 300;
         this.y = 0;
+        // Sprite dimensions
         this.width = 100;
         this.height = 100;
 
-        this.acceleration = 0.1;
+        // Vertical movement
+        this.gravity = 0.1;
         this.jumping = false;
         this.jumpVelocity = 0;
 
-        // TODO: DO YOU NEED TO HAVE A MIN SPEED TO REPRESENT MOVEMENT IN LEFT DIRECTION?
+        // Horizontal movement
+        this.acceleration = 0.1;
         this.minXSpeed = -5;
         this.maxXSpeed = 5;
         this.xSpeed = 0;
@@ -21,6 +25,7 @@ class Character {
         this.atRightWall = false;
         this.jumpKeyReleased = true;
 
+        // Sprite data for character
         this.marioLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 3, 1, 0.3, true, 1);
         this.marioRight = new Sprite(window.assets.images.marioRight, 99, 99, 3, 1, 0.3, true, 1);
         this.marioStopLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
@@ -30,12 +35,18 @@ class Character {
         this.direction = "STOP";
     }
 
-    hitGround(y){
+    hitGround(stopHeight){
         this.currentVelocity = 0;
         this.jumpVelocity = 0;
         this.onGround = true;
         this.jumping = false;
-        this.y = y;
+        this.y = stopHeight;
+    }
+
+    hitCeiling(){
+        this.currentVelocity = 0;
+        this.jumpVelocity = 0;
+        this.ySpeed = 0;
     }
 
     hitLeftWall(){
@@ -52,14 +63,14 @@ class Character {
     
     jump(){
         this.jumping = true;
-        this.currentVelocity = -3;
+        this.currentVelocity = -5;
         this.onGround = false;
     }
 
     draw() {
         // GRAVITY
-        if(this.onGround == false && this.currentVelocity < 5){
-            this.currentVelocity += this.acceleration;
+        if(this.onGround == false && this.currentVelocity < 15){
+            this.currentVelocity += this.gravity;
         } else if(this.onGround == true) {
             this.currentVelocity = 0;
         }
@@ -110,7 +121,7 @@ class Character {
         // TRIGGER JUMP WHEN CONDITIONS ARE MET
         if (keyIsDown(CONTROL) && this.jumping == false && this.onGround == true && this.jumpKeyReleased == true) {
             this.jump();
-            this.y -= 10;
+            this.y -= 1;
             this.jumpKeyReleased = false;
             // ADDED THIS
             this.onGround = false;
@@ -127,9 +138,9 @@ class Character {
             this.marioDirection[1].draw(this.x, this.y, this.width, this.height);
         }
         this.x += this.xSpeed;
-        console.log(this.xSpeed);
-        // WHAT ARE THESE FOR? TRY UNSETTING - ARE THEY TO PREVENT GETTING STUCK?
-        // this.onGround = false;
+        // console.log(this.xSpeed);
+        // These reset the values back for the next draw loop
+        this.onGround = false;
         this.atLeftWall = false;
         this.atRightWall = false;
     }
