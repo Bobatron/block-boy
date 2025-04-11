@@ -1,3 +1,4 @@
+var debug = true;
 var assets = {};
 
 function preload() {
@@ -6,30 +7,33 @@ function preload() {
     assets.images = {};
     assets.images.blockGreen = loadImage("assets/images/block-green.png");
     assets.images.blockRed = loadImage("assets/images/block-red.png");
-    assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
-    assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
+    assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
     assets.images.marioLeft = loadImage("assets/images/mario-left.png");
     assets.images.marioRight = loadImage("assets/images/mario-right.png");
+    assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
+    assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
+    assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"),loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 }
 
 // Configuration
-let width = 1000;
-let height = 500;
+let canvasWidth = 1000;
+let canvasHeight = 500;
 var grid;
 var maxBlocks = 5;
-var blockSize = 52;
 var gridSize = 50;
 var blockManager;
 var gameState;
+var platform;
 
 function setup() {
-    createCanvas(width, height);
+    createCanvas(canvasWidth, canvasHeight);
     background(51);
     frameRate();
-    grid = new Grid(width, height, gridSize);
+    grid = new Grid(canvasWidth, canvasHeight, gridSize);
     character = new Character();
-    blockManager = new BlockManager(blockSize, maxBlocks, gridSize);
+    blockManager = new BlockManager(gridSize, maxBlocks, canvasWidth, canvasHeight);
     gameState = 'menu';
+    platform = new Platform(200, 400, gridSize);
 }
 
 function draw() {
@@ -46,10 +50,11 @@ function draw() {
 function gameplay() {
     background(51);
     text(frameRate(), 10, 10);
-    //text(a, 30, 30);
-    //ellipse(10,10,10,10);
-    //sideTab(width/10, height);
+    // text("HELLO", 30, 30);
+    // ellipse(10,10,10,10);
+    // sideTab(width/10, height);
     blockManager.drawAll();
+    platform.draw();
     grid.refresh();
     for(let block of blockManager.blocks){
         checkCollisionLeft(character, block);
@@ -58,9 +63,9 @@ function gameplay() {
         checkCollisionUp(character, block);
     }
     
-    if (character.y > height - 100) {
+    if (character.y > canvasHeight - 100) {
         console.log("HIT GROUND!");
-        character.hitGround(height - 100);
+        character.hitGround(canvasHeight - 100);
     }
     if (mouseIsPressed) {
         blockManager.addRemoveBlocks();

@@ -1,6 +1,7 @@
 class BlockManager {
-    constructor(blockSize, maxBlocks, gridSize) {
-        this.blockSize = blockSize;
+    constructor(gridSize, maxBlocks, canvasWidth, canvasHeight) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.gridSize = gridSize;
         this.maxBlocks = maxBlocks;
         this.blocks = [];
@@ -19,7 +20,7 @@ class BlockManager {
     }
 
     addBlock(x,y){
-        this.blocks.push(new Block(x, y, this.blockSize));
+        this.blocks.push(new Block(x, y, this.gridSize));
     }
 
     getExistingBlockIndex(x, y) {
@@ -41,6 +42,12 @@ class BlockManager {
     addRemoveBlocks() {
         var mouseGridPosX = mouseX - (mouseX % this.gridSize);
         var mouseGridPosY = mouseY - (mouseY % this.gridSize);
+        if(mouseGridPosX > this.canvasWidth - this.gridSize || mouseGridPosY > this.canvasHeight - this.gridSize){
+            // Don't do anything as outside the canvas bounds
+            return;
+        }
+
+
         var existingBlockIndex = this.getExistingBlockIndex(mouseGridPosX, mouseGridPosY);
 
         if (this.mouseClicked == false && existingBlockIndex == -1) {

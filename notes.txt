@@ -1,0 +1,20 @@
+Add a directory of levels that contain the configuration for each level
+e.g. object placement, number of tiles
+
+Create a level manager that is running and can load int the next level
+The level manager can return the obstacle locations for the level to help with colisions
+
+Create a super class for objects
+size, can stop player, can hurt player, can move
+
+Create different types of object
+block, platform, moving platform, spike
+
+To help build the levels - add logs that let me use level creator to log x:y when a tile is placed
+
+
+BUG: Need to fine tune the right side collision as for some reason hits ceiling is logged when falling down right wall
+
+Expose the variables in the browser and tweak them on the fly to find the perfect setting - DONE!
+
+stand still jump should be lower than running jump add a jump scaling factor that increases with speed (or use current speed!)
