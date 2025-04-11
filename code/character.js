@@ -1,27 +1,28 @@
 class Character {
-    constructor() {
+    constructor(startX, startY) {
         this.debugParameterInputs = [];
         this.parameters = {
             // Vertical movement
-            gravity: 0.1,
-            jumpStrength: 5,
-            jumpVelocity: 0,
+            gravity: 1,
+            jumpStrength: 20,
+            topYSpeed: 5,
             // Horizontal movement
-            acceleration: 0.1,
-            topSpeed: 5,
+            acceleration: 0.3,
+            decceleration: 0.5,
+            topXSpeed: 5,
         };
 
         this.debugCurrentP = [];
         this.currentValues = {
-            currentVelocity: 0.0,
-            xSpeed: 0,
+            ySpeed: 0.0,
+            xSpeed: 0.0,
         }
         if(window.debug){
             this.drawDebugMenu();
         }
         // Start position
-        this.x = 300;
-        this.y = 0;
+        this.x = startX;
+        this.y = startY;
         // Sprite dimensions
         this.width = 100;
         this.height = 100;
@@ -39,13 +40,13 @@ class Character {
         this.marioRight = new Sprite(window.assets.images.marioRight, 99, 99, 3, 1, 0.3, true, 1);
         this.marioStopLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
         this.marioStopRight = new Sprite(window.assets.images.marioRight, 99, 99, 1, 1, 0.1, true, 0);
-        this.marioDirection = [this.marioStopLeft, this.marioLeft];
+        this.marioDirection = [this.marioStopRight, this.marioRight];
 
 
     }
 
     hitGround(stopHeight) {
-        this.currentValues.currentVelocity = 0;
+        this.currentValues.ySpeed = 0;
         this.parameters.jumpVelocity = 0;
         this.onGround = true;
         this.jumping = false;
@@ -53,7 +54,7 @@ class Character {
     }
 
     hitCeiling() {
-        this.currentValues.currentVelocity = 0;
+        this.currentValues.ySpeed = 0;
         this.parameters.jumpVelocity = 0;
         this.ySpeed = 0;
     }
@@ -72,19 +73,21 @@ class Character {
 
     jump() {
         this.jumping = true;
-        this.currentValues.currentVelocity = this.parameters.jumpStrength * -1;
+        this.currentValues.ySpeed = this.parameters.jumpStrength * -1;
         this.onGround = false;
     }
 
     draw() {
-        this.updateDebugValue();
-        // GRAVITY
-        if (this.onGround == false && this.currentValues.currentVelocity < 15) {
-            this.currentValues.currentVelocity += this.parameters.gravity;
-        } else if (this.onGround == true) {
-            this.currentValues.currentVelocity = 0;
+        if(window.debug){
+            this.updateDebugValue();
         }
-        this.y += this.currentValues.currentVelocity;
+        // GRAVITY
+        if (this.onGround == false && this.currentValues.ySpeed < this.parameters.topYSpeed) {
+            this.currentValues.ySpeed += this.parameters.gravity;
+        } else if (this.onGround == true) {
+            this.currentValues.ySpeed = 0;
+        }
+        this.y += this.currentValues.ySpeed;
 
         // ellipse(this.x, this.y, this.width, this.height);
         // this.marioLeft.draw(this.x, this.y, this.width, this.height);
@@ -95,9 +98,9 @@ class Character {
                 this.marioDirection = [this.marioStopLeft, this.marioLeft];
             }
             if (this.direction == "RIGHT") {
-                this.currentValues.xSpeed -= 0.5;
+                this.currentValues.xSpeed -= this.parameters.acceleration;
             }
-            if (this.direction == "LEFT" && this.currentValues.xSpeed > this.parameters.topSpeed * -1) {
+            if (this.direction == "LEFT" && this.currentValues.xSpeed > this.parameters.topXSpeed * -1) {
                 this.currentValues.xSpeed -= this.parameters.acceleration;
             }
             //  MOVING AND STANDING RIGHT
@@ -107,25 +110,25 @@ class Character {
                 this.marioDirection = [this.marioStopRight, this.marioRight];
             }
             if (this.direction == "LEFT") {
-                this.currentValues.xSpeed += 0.5;
+                this.currentValues.xSpeed += this.parameters.acceleration;
             }
-            if (this.direction == "RIGHT" && this.currentValues.xSpeed < this.parameters.topSpeed) {
+            if (this.direction == "RIGHT" && this.currentValues.xSpeed < this.parameters.topXSpeed) {
                 this.currentValues.xSpeed += this.parameters.acceleration;
             }
         } else {
             // ELSE NO LEFT OF RIGHT KEY PRESS
             // IF SPEED BETWEEN -0.1 AND 0.1 STOP MOVING CHARACTER
-            if (this.currentValues.xSpeed > -0.1 && this.currentValues.xSpeed < 0.1) {
+            if (this.currentValues.xSpeed > this.parameters.acceleration * -1 && this.currentValues.xSpeed < this.parameters.acceleration) {
                 this.currentValues.xSpeed = 0;
                 this.direction = "STOP";
             }
             // IF SPEED IN RIGHT DIRECTION THEN SLOW IT DOWN
             if (this.currentValues.xSpeed > 0) {
-                this.currentValues.xSpeed -= this.parameters.acceleration;
+                this.currentValues.xSpeed -= this.parameters.decceleration;
             }
             // IF SPEED IN LEFT DIRECTION THEN SLOW IT DOWN
             if (this.currentValues.xSpeed < 0) {
-                this.currentValues.xSpeed += this.parameters.acceleration;
+                this.currentValues.xSpeed += this.parameters.decceleration;
             }
         }
         // TRIGGER JUMP WHEN CONDITIONS ARE MET

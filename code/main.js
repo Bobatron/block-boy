@@ -10,6 +10,7 @@ function preload() {
     assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
     assets.images.marioLeft = loadImage("assets/images/mario-left.png");
     assets.images.marioRight = loadImage("assets/images/mario-right.png");
+    assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"),loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
@@ -23,17 +24,22 @@ var maxBlocks = 5;
 var gridSize = 50;
 var blockManager;
 var gameState;
-var platform;
+var platforms = [];
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
     background(51);
     frameRate();
     grid = new Grid(canvasWidth, canvasHeight, gridSize);
-    character = new Character();
+    character = new Character(0, canvasHeight - gridSize*3);
     blockManager = new BlockManager(gridSize, maxBlocks, canvasWidth, canvasHeight);
     gameState = 'menu';
-    platform = new Platform(200, 400, gridSize);
+    platforms[0] = new Platform(0, canvasHeight - gridSize, gridSize);
+    platforms[1] = new Platform(0 + gridSize, canvasHeight - gridSize, gridSize);
+    platforms[2] = new Platform(0 + gridSize*2, canvasHeight - gridSize, gridSize);
+    platforms[3] = new Platform(canvasWidth - (gridSize), canvasHeight - gridSize, gridSize);
+    platforms[4] = new Platform(canvasWidth - (gridSize*2), canvasHeight - gridSize, gridSize);
+    platforms[5] = new Platform(canvasWidth - (gridSize*3), canvasHeight - gridSize, gridSize);
 }
 
 function draw() {
@@ -54,13 +60,20 @@ function gameplay() {
     // ellipse(10,10,10,10);
     // sideTab(width/10, height);
     blockManager.drawAll();
-    platform.draw();
     grid.refresh();
     for(let block of blockManager.blocks){
         checkCollisionLeft(character, block);
         checkCollisionRight(character, block);
         checkCollisionDown(character, block);
         checkCollisionUp(character, block);
+    }
+
+    for(let platform of platforms){
+    platform.draw();
+    checkCollisionLeft(character, platform);
+    checkCollisionRight(character, platform);
+    checkCollisionDown(character, platform);
+    checkCollisionUp(character, platform);
     }
     
     if (character.y > canvasHeight - 100) {
@@ -91,5 +104,6 @@ function keyPressed() {
         textFont('Arial');
         textAlign(LEFT, BASELINE);
         textStyle(NORMAL);
+        window.assets.sounds.bgMusic.play();
     }
 }
