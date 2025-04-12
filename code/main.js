@@ -5,6 +5,7 @@ function preload() {
     // initialize media
     assets.sounds = {};
     assets.images = {};
+    assets.levels = [];
     assets.images.blockGreen = loadImage("assets/images/block-green.png");
     assets.images.blockRed = loadImage("assets/images/block-red.png");
     assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
@@ -14,6 +15,10 @@ function preload() {
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"),loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
+
+    assets.levels[0] = loadTable("assets/levels/level-1.csv", "csv");
+    assets.levels[1] = loadTable("assets/levels/level-2.csv", "csv");
+
 }
 
 // Configuration
@@ -25,7 +30,7 @@ var gridSize = 50;
 var blockManager;
 var gameState;
 var platforms = [];
-var spikecubes = [];
+var levelManager;
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
@@ -35,13 +40,10 @@ function setup() {
     character = new Character(0, canvasHeight - gridSize*3);
     blockManager = new BlockManager(gridSize, maxBlocks, canvasWidth, canvasHeight);
     gameState = 'menu';
-    platforms[0] = new Platform(0, canvasHeight - gridSize, gridSize);
-    platforms[1] = new Platform(0 + gridSize, canvasHeight - gridSize, gridSize);
-    platforms[2] = new Platform(0 + gridSize*2, canvasHeight - gridSize, gridSize);
-    platforms[3] = new Platform(canvasWidth - (gridSize), canvasHeight - gridSize, gridSize);
-    platforms[4] = new Platform(canvasWidth - (gridSize*2), canvasHeight - gridSize, gridSize);
-    platforms[5] = new Platform(canvasWidth - (gridSize*3), canvasHeight - gridSize, gridSize);
-    spikecubes[0] = new SpikeCube(canvasWidth - (gridSize*3), canvasHeight - gridSize, gridSize);
+    levelManager = new LevelManager();
+    levelManager.loadLevel(assets.levels[0]);
+    platforms = levelManager.getPlatforms();
+    levelManager.draw();
 }
 
 function draw() {
@@ -58,9 +60,6 @@ function draw() {
 function gameplay() {
     background(51);
     text(frameRate(), 10, 10);
-    // text("HELLO", 30, 30);
-    // ellipse(10,10,10,10);
-    // sideTab(width/10, height);
     blockManager.drawAll();
     grid.refresh();
     for(let block of blockManager.blocks){
@@ -94,10 +93,6 @@ function gameplay() {
         blockManager.addRemoveBlocks();
     }
     character.draw();
-}
-
-function sideTab(w, h) {
-    rect(20, 20, w, h);
 }
 
 function mouseReleased() {
