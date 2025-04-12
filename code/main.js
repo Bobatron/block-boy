@@ -25,6 +25,7 @@ var gridSize = 50;
 var blockManager;
 var gameState;
 var platforms = [];
+var spikecubes = [];
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
@@ -40,6 +41,7 @@ function setup() {
     platforms[3] = new Platform(canvasWidth - (gridSize), canvasHeight - gridSize, gridSize);
     platforms[4] = new Platform(canvasWidth - (gridSize*2), canvasHeight - gridSize, gridSize);
     platforms[5] = new Platform(canvasWidth - (gridSize*3), canvasHeight - gridSize, gridSize);
+    spikecubes[0] = new SpikeCube(canvasWidth - (gridSize*3), canvasHeight - gridSize, gridSize);
 }
 
 function draw() {
@@ -75,6 +77,14 @@ function gameplay() {
     checkCollisionDown(character, platform);
     checkCollisionUp(character, platform);
     }
+
+    for(let spikecube of spikecubes){
+        platform.draw();
+        checkCollisionLeft(character, spikecube);
+        checkCollisionRight(character, spikecube);
+        checkCollisionDown(character, spikecube);
+        checkCollisionUp(character, spikecube);
+        }
     
     if (character.y > canvasHeight - 100) {
         console.log("HIT GROUND!");
