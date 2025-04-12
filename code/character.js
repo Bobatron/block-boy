@@ -73,7 +73,7 @@ class Character {
 
     jump() {
         this.jumping = true;
-        this.currentValues.ySpeed = this.parameters.jumpStrength * -1;
+        this.currentValues.ySpeed = (this.parameters.jumpStrength + Math.abs(this.currentValues.xSpeed/2)) * -1;
         this.onGround = false;
     }
 
@@ -117,8 +117,8 @@ class Character {
             }
         } else {
             // ELSE NO LEFT OF RIGHT KEY PRESS
-            // IF SPEED BETWEEN -0.1 AND 0.1 STOP MOVING CHARACTER
-            if (this.currentValues.xSpeed > this.parameters.acceleration * -1 && this.currentValues.xSpeed < this.parameters.acceleration) {
+            // IF SPEED BETWEEN -VE AND +VE ACCELERATION STOP MOVING CHARACTER
+            if (this.currentValues.xSpeed > (this.parameters.acceleration + 0.1) * -1 && this.currentValues.xSpeed < this.parameters.acceleration + 0.1) {
                 this.currentValues.xSpeed = 0;
                 this.direction = "STOP";
             }
