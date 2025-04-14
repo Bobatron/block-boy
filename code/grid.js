@@ -1,8 +1,7 @@
 class Grid {
-
-    constructor(width, height, blockSize){
-        this.width = width;
-        this.height = height;
+    constructor(canvasWidth, canvasHeight, blockSize){
+        this.width = canvasWidth;
+        this.height = canvasHeight;
         this.blockSize = blockSize;
     }
 

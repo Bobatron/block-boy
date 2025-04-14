@@ -1,0 +1,21 @@
+class LevelObject{
+    constructor(x, y, blockSize, image){
+        this.image = image;
+        this.x = x;
+        this.y = y;
+        this.blockSize = blockSize;
+    }
+
+    reset(x, y){
+        this.x = x;
+        this.y = y;
+    }
+
+    getLocation(){
+        return this.x + ":" + this.y;
+    }
+
+    draw(){
+        image(this.image, this.x, this.y, this.blockSize, this.blockSize);
+    }
+}

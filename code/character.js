@@ -41,11 +41,14 @@ class Character {
         this.marioStopLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
         this.marioStopRight = new Sprite(window.assets.images.marioRight, 99, 99, 1, 1, 0.1, true, 0);
         this.marioDirection = [this.marioStopRight, this.marioRight];
-
-
     }
 
-    hitGround(stopHeight) {
+    reset(startX, startY){
+        this.x = startX;
+        this.y = startY;
+    }
+
+    hitFloor(stopHeight) {
         this.currentValues.ySpeed = 0;
         this.parameters.jumpVelocity = 0;
         this.onGround = true;
@@ -158,7 +161,6 @@ class Character {
         this.atLeftWall = false;
         this.atRightWall = false;
     }
-
 
     drawDebugMenu() {
         const xOffset = width + 20; // Position inputs outside the canvas

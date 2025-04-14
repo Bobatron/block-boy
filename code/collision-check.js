@@ -11,7 +11,7 @@ function checkCollisionDown(character, obstacle) {
         5
     )) {
         console.log("HIT FLOOR!");
-        character.hitGround(obstacle.y - obstacle.blockSize - obstacle.blockSize);
+        character.hitFloor(obstacle.y - obstacle.blockSize - obstacle.blockSize);
     }
 }
 
@@ -64,5 +64,21 @@ function checkCollisionRight(character, obstacle) {
     ) && (character.direction == "LEFT" || character.direction == "STOP")) {
         console.log("HIT RIGHT!");
         character.hitRightWall();
+    }
+}
+
+function checkCollisionGoal(character, goal) {
+    if (collideRectRect(
+        goal.x,
+        goal.y,
+        goal.blockSize,
+        goal.blockSize,
+        character.x + (character.width / 3),
+        character.y + character.height / 1.5,
+        5,
+        character.height / 3
+    )) {
+        console.log("HIT GOAL!");
+        return true;
     }
 }
