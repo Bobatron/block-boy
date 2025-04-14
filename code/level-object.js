@@ -1,9 +1,10 @@
 class LevelObject{
-    constructor(x, y, blockSize, image){
+    constructor(x, y, blockSize, image, killPlayer){
         this.image = image;
         this.x = x;
         this.y = y;
         this.blockSize = blockSize;
+        this.killPlayer = killPlayer;
     }
 
     reset(x, y){

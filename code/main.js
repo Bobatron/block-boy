@@ -11,6 +11,7 @@ function preload() {
     assets.images.blockGreen = loadImage("assets/images/block-green.png");
     assets.images.blockRed = loadImage("assets/images/block-red.png");
     assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
+    assets.images.blockSpike = loadImage("assets/images/block-spike.png");
     assets.images.marioLeft = loadImage("assets/images/mario-left.png");
     assets.images.marioRight = loadImage("assets/images/mario-right.png");
     assets.images.goal = loadImage("assets/images/goal.png");
@@ -35,6 +36,7 @@ var blockSize = 50;
 var blockManager;
 var gameState;
 var platforms = [];
+var spikes = [];
 var levelManager;
 var currentLevel = 0;
 var goal;
@@ -48,7 +50,7 @@ function setup() {
     levelManager = new LevelManager(blockSize);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
     character = new Character(0, canvasHeight - blockSize * 3);
-    goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal);
+    goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal, false);
 }
 
 function keyPressed() {
@@ -70,6 +72,7 @@ function loadLevel() {
     levelManager.loadLevelData(assets.levels.data[currentLevel]);
     levelManager.loadLevelConfig(assets.levels.config[currentLevel]);
     platforms = levelManager.getPlatforms();
+    spikes = levelManager.getSpikes();
     let startPosition = levelManager.getStartPosition();
     let goalPosition = levelManager.getGoalPosition();
     character.reset(startPosition.x, startPosition.y);
@@ -107,7 +110,7 @@ function gameplay() {
     blockManager.drawAll();
     grid.refresh();
     goal.draw();
-    if(checkCollisionGoal(character, goal)){
+    if (checkCollisionRect(character, goal)) {
         endLevel();
     }
 
@@ -126,11 +129,19 @@ function gameplay() {
         checkCollisionUp(character, platform);
     }
 
+    for (let spike of spikes) {
+        spike.draw();
+        if (checkCollisionRect(character, spike)) {
+            console.log("YOWZA!");
+            endLevel();
+        }
+    }
+
     if (character.y > canvasHeight - 100) {
         console.log("HIT GROUND!");
         endLevel();
     }
-    
+
     if (mouseIsPressed) {
         blockManager.addRemoveBlocks();
     }

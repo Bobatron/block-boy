@@ -1,36 +1,44 @@
 function checkCollisionDown(character, obstacle) {
     var collisionXPadding = 5;
     if (!character.onGround && collideLineRect(
-        obstacle.x + collisionXPadding, 
-        obstacle.y + 5, 
-        obstacle.x + obstacle.blockSize - collisionXPadding, 
-        obstacle.y + 5, 
-        character.x + (character.width / 3), 
-        character.y + character.height, 
-        character.width / 3, 
+        obstacle.x + collisionXPadding,
+        obstacle.y + 5,
+        obstacle.x + obstacle.blockSize - collisionXPadding,
+        obstacle.y + 5,
+        character.x + (character.width / 3),
+        character.y + character.height,
+        character.width / 3,
         5
     )) {
-        console.log("HIT FLOOR!");
-        character.hitFloor(obstacle.y - obstacle.blockSize - obstacle.blockSize);
+        if (!obstacle.killPlayer) {
+            console.log("HIT FLOOR!");
+            character.hitFloor(obstacle.y - obstacle.blockSize - obstacle.blockSize);
+        }
+        return true;
     }
+    return false;
 }
 
 function checkCollisionUp(character, obstacle) {
     var collisionXPadding = 5;
     if (collideLineRect(
-        obstacle.x, 
-        obstacle.y, 
-        obstacle.x + obstacle.blockSize - collisionXPadding, 
-        obstacle.y, 
-        character.x + (character.width / 3), 
-        character.y, 
-        character.width / 3, 
+        obstacle.x,
+        obstacle.y,
+        obstacle.x + obstacle.blockSize - collisionXPadding,
+        obstacle.y,
+        character.x + (character.width / 3),
+        character.y,
+        character.width / 3,
         5
-    ) ) {
-        character.y = obstacle.y;
-        console.log("HIT CEILING!");
-        character.hitCeiling();
+    )) {
+        if (!obstacle.killPlayer) {
+            character.y = obstacle.y;
+            console.log("HIT CEILING!");
+            character.hitCeiling();
+        }
+        return true;
     }
+    return false;
 }
 
 function checkCollisionLeft(character, obstacle) {
@@ -45,9 +53,13 @@ function checkCollisionLeft(character, obstacle) {
         5,
         character.height / 3
     ) && (character.direction == "RIGHT" || character.direction == "STOP")) {
-        console.log("HIT LEFT!");
-        character.hitLeftWall();
+        if (!obstacle.killPlayer) {
+            console.log("HIT LEFT!");
+            character.hitLeftWall();
+        }
+        return true;
     }
+    return false;
 }
 
 function checkCollisionRight(character, obstacle) {
@@ -62,23 +74,30 @@ function checkCollisionRight(character, obstacle) {
         5,
         character.height / 3
     ) && (character.direction == "LEFT" || character.direction == "STOP")) {
-        console.log("HIT RIGHT!");
-        character.hitRightWall();
+        if (!obstacle.killPlayer) {
+            console.log("HIT RIGHT!");
+            character.hitRightWall();
+        }
+        return true;
     }
+    return false;
 }
 
-function checkCollisionGoal(character, goal) {
+function checkCollisionRect(character, rectangle) {
+    console.log(rectangle.x, rectangle.y, rectangle.blockSize, rectangle.blockSize);
+    console.log(character.x + (character.width / 3), character.y + character.height / 1.5, 5, character.height / 3);
     if (collideRectRect(
-        goal.x,
-        goal.y,
-        goal.blockSize,
-        goal.blockSize,
+        rectangle.x,
+        rectangle.y,
+        rectangle.blockSize,
+        rectangle.blockSize,
         character.x + (character.width / 3),
         character.y + character.height / 1.5,
         5,
         character.height / 3
     )) {
-        console.log("HIT GOAL!");
+        console.log("COLLISION!");
         return true;
     }
+    return false;
 }
