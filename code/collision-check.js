@@ -84,8 +84,6 @@ function checkCollisionRight(character, obstacle) {
 }
 
 function checkCollisionRect(character, rectangle) {
-    console.log(rectangle.x, rectangle.y, rectangle.blockSize, rectangle.blockSize);
-    console.log(character.x + (character.width / 3), character.y + character.height / 1.5, 5, character.height / 3);
     if (collideRectRect(
         rectangle.x,
         rectangle.y,

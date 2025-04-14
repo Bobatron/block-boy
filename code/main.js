@@ -99,7 +99,6 @@ function draw() {
             break;
         case 'gameplay':
             gameplay();
-            collideDebug(true);
             break;
     }
 }
