@@ -12,6 +12,7 @@ function checkCollisionDown(character, obstacle) {
     )) {
         console.log("HIT FLOOR!");
         character.hitGround(obstacle.y - obstacle.blockSize - obstacle.blockSize);
+        return(true);
     }
 }
 
@@ -30,7 +31,7 @@ function checkCollisionUp(character, obstacle) {
         character.y = obstacle.y;
         console.log("HIT CEILING!");
         character.hitCeiling();
-        return(true)
+        return(true);
     }
 }
 
@@ -48,7 +49,7 @@ function checkCollisionLeft(character, obstacle) {
     ) && (character.direction == "RIGHT" || character.direction == "STOP")) {
         console.log("HIT LEFT!");
         character.hitLeftWall();
-        return(true)
+        return(true);
     }
 }
 
@@ -66,6 +67,6 @@ function checkCollisionRight(character, obstacle) {
     ) && (character.direction == "LEFT" || character.direction == "STOP")) {
         console.log("HIT RIGHT!");
         character.hitRightWall();
-        return(true)
+        return(true);
     }
 }

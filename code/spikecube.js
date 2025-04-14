@@ -1,12 +1,8 @@
-class SpikeCube {
-    constructor(x, y, gridSize){
-        this.blockCurrent = window.assets.images.blockRed.get();
-        this.x = x;
-        this.y = y;
-        this.location = x + ":" + y;
-        this.blockSize = blockSize;
+class SpikeCube extends Platform {
+    constructor(x, y, blockSize) {
+        super(x, y, blockSize);
+        this.blockCurrent = window.assets.images.blockSpike.get(); 
     }
-
     getLocation(){
         return this.x + ":" + this.y;
     }

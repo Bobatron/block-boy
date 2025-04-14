@@ -9,6 +9,7 @@ function preload() {
     assets.images.blockGreen = loadImage("assets/images/block-green.png");
     assets.images.blockRed = loadImage("assets/images/block-red.png");
     assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
+    assets.images.blockSpike = loadImage("assets/images/block-spike.png");
     assets.images.marioLeft = loadImage("assets/images/mario-left.png");
     assets.images.marioRight = loadImage("assets/images/mario-right.png");
     assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
@@ -30,6 +31,7 @@ var gridSize = 50;
 var blockManager;
 var gameState;
 var platforms = [];
+var spikecube = [];
 var levelManager;
 
 function setup() {
@@ -41,8 +43,9 @@ function setup() {
     blockManager = new BlockManager(gridSize, maxBlocks, canvasWidth, canvasHeight);
     gameState = 'menu';
     levelManager = new LevelManager();
-    levelManager.loadLevel(assets.levels[0]);
+    levelManager.loadLevel(assets.levels[1]);
     platforms = levelManager.getPlatforms();
+    spikecubes = levelManager.getSpikeCubes();
     levelManager.draw();
 }
 
@@ -78,11 +81,15 @@ function gameplay() {
     }
 
     for(let spikecube of spikecubes){
-        platform.draw();
-        checkCollisionLeft(character, spikecube);
-        checkCollisionRight(character, spikecube);
-        checkCollisionDown(character, spikecube);
-        checkCollisionUp(character, spikecube);
+        spikecube.draw();
+        if(
+            checkCollisionLeft(character, spikecube) ||
+            checkCollisionRight(character, spikecube)||
+            checkCollisionDown(character, spikecube)||
+            checkCollisionUp(character, spikecube)
+        ){
+            console.log("Yowza!");
+        }
         }
     
     if (character.y > canvasHeight - 100) {
