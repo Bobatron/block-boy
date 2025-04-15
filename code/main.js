@@ -15,7 +15,7 @@ function preload() {
     assets.images.marioLeft = loadImage("assets/images/mario-left.png");
     assets.images.marioRight = loadImage("assets/images/mario-right.png");
     assets.images.goal = loadImage("assets/images/goal.png");
-    assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
+    assets.sounds.bgMusic = loadSound("assets/sounds/bg-music2.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
