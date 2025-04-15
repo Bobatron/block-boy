@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 var assets = {};
 
 function preload() {
@@ -27,8 +27,8 @@ function preload() {
 }
 
 // Configuration
-let canvasWidth = 1000;
-let canvasHeight = 500;
+let canvasWidth = 1250;
+let canvasHeight = 650;
 var grid;
 var maxBlocks = 5;
 var blockStock = 5;
@@ -42,6 +42,7 @@ var currentLevel = 0;
 var goal;
 
 function setup() {
+    select('body').style('background-color', '#000000'); // Set browser background to black
     createCanvas(canvasWidth, canvasHeight);
     background(51);
     frameRate();
@@ -82,13 +83,28 @@ function loadLevel() {
     blockManager.load(blockSize, maxBlocks, blockStock, canvasWidth, canvasHeight);
 }
 
-function endLevel() {
+function winLevel() {
+    // Need a win level screen and gameState
     gameState = 'menu';
     window.assets.sounds.bgMusic.stop();
     currentLevel += 1;
     if (currentLevel >= assets.levels.data.length) {
         currentLevel = 0;
     }
+}
+
+function gameover() {
+    // Need a game over screen and gameState
+    gameState = 'menu';
+    window.assets.sounds.bgMusic.stop();
+    currentLevel = 0;
+}
+
+function winGame() {
+    // Need a win game screen and gameState
+    gameState = 'menu';
+    window.assets.sounds.bgMusic.stop();
+    currentLevel = 0;
 }
 
 
@@ -110,35 +126,55 @@ function gameplay() {
     grid.refresh();
     goal.draw();
     if (checkCollisionRect(character, goal)) {
-        endLevel();
+        winLevel();
     }
 
     for (let block of blockManager.blocks) {
-        checkCollisionLeft(character, block);
-        checkCollisionRight(character, block);
-        checkCollisionDown(character, block);
-        checkCollisionUp(character, block);
+        // This was the original code but have changed to below if for now
+        // checkCollisionLeft(character, block);
+        // checkCollisionRight(character, block);
+        // checkCollisionDown(character, block);
+        // checkCollisionUp(character, block);
+
+        if (
+            checkCollisionLeft(character, block) ||
+            checkCollisionRight(character, block) ||
+            checkCollisionDown(character, block) ||
+            checkCollisionUp(character, block)
+        ) {
+            continue;
+        }
     }
 
     for (let platform of platforms) {
         platform.draw();
-        checkCollisionLeft(character, platform);
-        checkCollisionRight(character, platform);
-        checkCollisionDown(character, platform);
-        checkCollisionUp(character, platform);
+        // This was the original code but have changed to below if for now
+        // checkCollisionLeft(character, platform);
+        // checkCollisionRight(character, platform);
+        // checkCollisionDown(character, platform);
+        // checkCollisionUp(character, platform);
+
+        if (
+            checkCollisionLeft(character, platform) ||
+            checkCollisionRight(character, platform) ||
+            checkCollisionDown(character, platform) ||
+            checkCollisionUp(character, platform)
+        ) {
+            continue;
+        }
     }
 
     for (let spike of spikes) {
         spike.draw();
         if (checkCollisionRect(character, spike)) {
             console.log("YOWZA!");
-            endLevel();
+            gameover();
         }
     }
 
     if (character.y > canvasHeight - 100) {
         console.log("HIT GROUND!");
-        endLevel();
+        gameover();
     }
 
     if (mouseIsPressed) {

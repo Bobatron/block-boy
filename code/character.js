@@ -126,12 +126,18 @@ class Character {
                 this.direction = "STOP";
             }
             // IF SPEED IN RIGHT DIRECTION THEN SLOW IT DOWN
-            if (this.currentValues.xSpeed > 0) {
+            if (this.currentValues.xSpeed > 0.0) {
                 this.currentValues.xSpeed -= this.parameters.decceleration;
             }
+            if (this.currentValues.xSpeed > 0.0 && this.currentValues.xSpeed < this.parameters.decceleration) {
+                this.currentValues.xSpeed = 0;
+            }
             // IF SPEED IN LEFT DIRECTION THEN SLOW IT DOWN
-            if (this.currentValues.xSpeed < 0) {
+            if (this.currentValues.xSpeed < 0.0) {
                 this.currentValues.xSpeed += this.parameters.decceleration;
+            }
+            if (this.currentValues.xSpeed < 0.0 && this.currentValues.xSpeed > (this.parameters.decceleration * -1)) {
+                this.currentValues.xSpeed = 0;
             }
         }
         // TRIGGER JUMP WHEN CONDITIONS ARE MET
