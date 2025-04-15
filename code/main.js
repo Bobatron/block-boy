@@ -66,6 +66,23 @@ function keyPressed() {
         textStyle(NORMAL);
         loadLevel();
     }
+    if (keyCode === ENTER && gameState === 'gameover') {
+        gameState = 'menu';
+    }
+    if (keyCode === ENTER && gameState === 'winlevel') {
+        gameState = 'gameplay';
+        stroke(0);
+        fill(255);
+        strokeWeight(1);
+        textSize(12);
+        textFont('Arial');
+        textAlign(LEFT, BASELINE);
+        textStyle(NORMAL);
+        loadLevel();
+    }
+    if (keyCode === ENTER && gameState === 'wingame') {
+        gameState = 'menu';
+    }
 }
 
 function loadLevel() {
@@ -85,28 +102,21 @@ function loadLevel() {
 
 function winLevel() {
     // Need a win level screen and gameState
-    gameState = 'menu';
+    gameState = 'winlevel';
     window.assets.sounds.bgMusic.stop();
     currentLevel += 1;
     if (currentLevel >= assets.levels.data.length) {
+        gameState = 'wingame';
         currentLevel = 0;
     }
 }
 
 function gameover() {
     // Need a game over screen and gameState
-    gameState = 'menu';
+    gameState = 'gameover';
     window.assets.sounds.bgMusic.stop();
     currentLevel = 0;
 }
-
-function winGame() {
-    // Need a win game screen and gameState
-    gameState = 'menu';
-    window.assets.sounds.bgMusic.stop();
-    currentLevel = 0;
-}
-
 
 function draw() {
     switch (gameState) {
@@ -115,6 +125,15 @@ function draw() {
             break;
         case 'gameplay':
             gameplay();
+            break;
+        case 'gameover':
+            drawGameOverScreen();
+            break;
+        case 'winlevel':
+            drawWinLevelScreen();
+            break;
+        case 'wingame':
+            drawWinGameScreen();
             break;
     }
 }
