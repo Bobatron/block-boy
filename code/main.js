@@ -20,7 +20,7 @@ function preload() {
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
         assets.levels.data[i] = loadTable(`assets/levels/level-${i}.csv`, "csv");
         assets.levels.config[i] = loadJSON(`assets/levels/level-${i}.json`);
     }
