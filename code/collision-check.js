@@ -1,6 +1,6 @@
 function checkCollisionDown(character, obstacle) {
     var collisionXPadding = 5;
-    if (!character.onGround && collideLineRect(
+    if (!character.onGround && (collideLineRect(
         obstacle.x + collisionXPadding,
         obstacle.y + 5,
         obstacle.x + obstacle.blockSize - collisionXPadding,
@@ -9,7 +9,16 @@ function checkCollisionDown(character, obstacle) {
         character.y + character.height,
         character.width / 3,
         5
-    )) {
+    ) || (collideLineRect(
+        obstacle.x + collisionXPadding,
+        obstacle.y + 5,
+        obstacle.x + obstacle.blockSize - collisionXPadding,
+        obstacle.y + 5,
+        character.x + (character.width / 3),
+        character.y + character.height,
+        character.width / 3,
+        5 + character.currentValues.ySpeed
+    )))) {
         if (!obstacle.killPlayer) {
             console.log("HIT FLOOR!");
             character.hitFloor(obstacle.y - obstacle.blockSize - obstacle.blockSize);
