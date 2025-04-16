@@ -30,6 +30,15 @@ function checkCollisionUp(character, obstacle) {
         character.y,
         character.width / 3,
         5
+    ) || collideLineRect(
+        obstacle.x,
+        obstacle.y,
+        obstacle.x + obstacle.blockSize - collisionXPadding,
+        obstacle.y,
+        character.x + (character.width / 3),
+        character.y,
+        character.width / 3,
+        5 + character.currentValues.ySpeed
     )) {
         if (!obstacle.killPlayer) {
             character.y = obstacle.y;
