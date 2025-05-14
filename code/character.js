@@ -178,6 +178,7 @@ class Character {
             // Create label
             let debugLabel = createElement('label', key);
             debugLabel.position(xOffset, yOffset + i * 30);
+            debugLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
             // Create input box
             let debugInput = createInput(this.parameters[key].toString());
             debugInput.position(xOffset + 100, yOffset + i * 30);
@@ -189,6 +190,7 @@ class Character {
             // Create label
             let debugLabel = createElement('label', key + ":");
             debugLabel.position(xOffset, yOffset + (i*30) + (parameterKeys.length * 30));
+            debugLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
             // Create text box
             let debugP = createP(this.currentValues[key]);
             debugP.position(xOffset + 115, yOffset + (i*30) + (parameterKeys.length * 30) - 15);
