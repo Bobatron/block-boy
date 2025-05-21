@@ -1,25 +1,39 @@
 Add a directory of levels that contain the configuration for each level
 e.g. object placement, number of tiles
+DONE
 
-Create a level manager that is running and can load int the next level
-The level manager can return the obstacle locations for the level to help with colisions
+Create a level manager that is running and can load int the next level DONE
+The level manager can return the obstacle locations for the level to help with colisions DONE
+ 
+Create a super class for objects DONE
+size, can stop player, can hurt player, can move DONE
 
-Create a super class for objects
-size, can stop player, can hurt player, can move
-
-Create different types of object
-block, platform, moving platform, spike
+Create different types of object DONE
+block, platform, moving platform, spike SOME DONE
 
 To help build the levels - add logs that let me use level creator to log x:y when a tile is placed
 
-
-BUG: Need to fine tune the right side collision as for some reason hits ceiling is logged when falling down right wall
+BUG: Need to fine tune the right side collision as for some reason hits ceiling is logged when falling down right wall 
 
 Expose the variables in the browser and tweak them on the fly to find the perfect setting - DONE!
 
-stand still jump should be lower than running jump add a jump scaling factor that increases with speed (or use current speed!)
-
-
+stand still jump should be lower than running jump add a jump scaling factor that increases with speed (or use current speed!) DONE
 
 Notes:
 The reason to use collision line and rectangle is to allow different actions to be occur based on which side of the object is hit
+
+
+
+
+Fixed by not using the collide library
+
+should tidy up the code I have added DONE
+
+Also generic collide for goal is not working FIXED
+
+Also need to disable being able to draw a block on player 
+- Will need to update the block manager with logic DONE
+- use modulus to snap the mouse position back to x,y of grid block. Then run a collide with character and don't draw if true DONE
+- add a sound for this (so player knows can't draw) TRIED THIS AND WAS WEIRD (MAYBE TRY AGAIN LATER WITH FUNNY SOUND)
+
+- Starting to notice slow down with collision detection. Can add a check on location to see if worth doing full collision check. FIXED

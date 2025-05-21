@@ -1,7 +1,7 @@
 # Project Goals
 
 ## Must Have
-- [ ] Get collisions working properly
+- [X] Get collisions working properly
 1. Add a better debug mode for developing and testing collisions
 2. Consider changing the collision approach (e.g. cross)
 3. Split out the collisions classes into smaller more readable classes

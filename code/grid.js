@@ -9,7 +9,9 @@ class Grid {
         line(x,y,x1,y1);
     }
 
-    refresh(){
+    draw(){
+        stroke(0);
+        strokeWeight(1);
         for(var x = 0; x < this.width; x+=this.blockSize){
             this.drawLine(x, 0, x, this.height);
         }

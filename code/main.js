@@ -1,4 +1,5 @@
-var debug = false;
+var debug = true;
+var collisionCheckCount = 0;
 var assets = {};
 
 function preload() {
@@ -34,6 +35,7 @@ var maxBlocks = 5;
 var blockStock = 5;
 var blockSize = 50;
 var blockManager;
+var collisionChecker;
 var gameState;
 var platforms = [];
 var spikes = [];
@@ -47,10 +49,11 @@ function setup() {
     background(51);
     frameRate();
     gameState = 'menu';
-    blockManager = new BlockManager(blockSize, maxBlocks, canvasWidth, canvasHeight);
+    collisionChecker = new CollisionChecker(canvasWidth, canvasHeight, blockSize);
+    blockManager = new BlockManager(collisionChecker);
     levelManager = new LevelManager(blockSize);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
-    character = new Character(0, canvasHeight - blockSize * 3);
+    character = new Character(0, 0, blockSize);
     goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal, false);
 }
 
@@ -87,21 +90,28 @@ function keyPressed() {
 
 function loadLevel() {
     window.assets.sounds.bgMusic.loop();
+    collisionChecker.initializeCollisionCheckGrid();
     levelManager.loadLevelData(assets.levels.data[currentLevel]);
     levelManager.loadLevelConfig(assets.levels.config[currentLevel]);
     platforms = levelManager.getPlatforms();
+    for (let i = 0; i < platforms.length; i++) {
+        collisionChecker.addObjectToCollisionCheckGrid(platforms[i]);
+    }
     spikes = levelManager.getSpikes();
+    for (let i = 0; i < spikes.length; i++) {
+        collisionChecker.addObjectToCollisionCheckGrid(spikes[i]);
+    }
     let startPosition = levelManager.getStartPosition();
     let goalPosition = levelManager.getGoalPosition();
-    character.reset(startPosition.x, startPosition.y);
+    character.reset(startPosition.x, startPosition.y, blockSize);
     goal.reset(goalPosition.x, goalPosition.y);
     maxBlocks = levelManager.getLevelConfig().maxBlocks;
     blockStock = levelManager.getLevelConfig().blockStock;
     blockManager.load(blockSize, maxBlocks, blockStock, canvasWidth, canvasHeight);
+    console.log("CollisionGrid Length ", collisionChecker.collisionCheckGrid);
 }
 
 function winLevel() {
-    // Need a win level screen and gameState
     gameState = 'winlevel';
     window.assets.sounds.bgMusic.stop();
     currentLevel += 1;
@@ -112,7 +122,6 @@ function winLevel() {
 }
 
 function gameover() {
-    // Need a game over screen and gameState
     gameState = 'gameover';
     window.assets.sounds.bgMusic.stop();
     currentLevel = 0;
@@ -141,46 +150,38 @@ function draw() {
 function gameplay() {
     background(51);
     text(frameRate(), 10, 10);
-    blockManager.drawAll();
-    grid.refresh();
+    blockManager.draw();
+    grid.draw();
     goal.draw();
     if (checkCollisionRect(character, goal)) {
         winLevel();
     }
 
-    for (let block of blockManager.blocks) {
-        // This was the original code but have changed to below if for now
-        // checkCollisionLeft(character, block);
-        // checkCollisionRight(character, block);
-        // checkCollisionDown(character, block);
-        // checkCollisionUp(character, block);
+    let startX = Math.floor(character.collisionBox.leftX1 / blockSize);
+    let endX = Math.floor(character.collisionBox.rightX1  / blockSize);
+    let startY = Math.floor(character.collisionBox.topY1 / blockSize);
+    let endY = Math.floor(character.collisionBox.bottomY1 / blockSize);
 
-        if (
-            checkCollisionLeft(character, block) ||
-            checkCollisionRight(character, block) ||
-            checkCollisionDown(character, block) ||
-            checkCollisionUp(character, block)
-        ) {
-            continue;
+
+    for (let x = startX; x <= endX; x++) {
+        for (let y = startY; y <= endY; y++) {
+            if (collisionChecker.collisionCheckGrid[x] && collisionChecker.collisionCheckGrid[x][y]) {
+                for (let index = 0; index < collisionChecker.collisionCheckGrid[x][y].length; index++) {
+                    let object = collisionChecker.collisionCheckGrid[x][y][index];
+                    // Character wont be in this grid currently but should be in the future
+                    if (object !== character) {
+                        checkCollisionRightSide(character, object);
+                        checkCollisionLeftSide(character, object);
+                        checkCollisionDown(character, object);
+                        checkCollisionUp(character, object);
+                    }
+                }
+            }
         }
     }
 
     for (let platform of platforms) {
         platform.draw();
-        // This was the original code but have changed to below if for now
-        // checkCollisionLeft(character, platform);
-        // checkCollisionRight(character, platform);
-        // checkCollisionDown(character, platform);
-        // checkCollisionUp(character, platform);
-
-        if (
-            checkCollisionLeft(character, platform) ||
-            checkCollisionRight(character, platform) ||
-            checkCollisionDown(character, platform) ||
-            checkCollisionUp(character, platform)
-        ) {
-            continue;
-        }
     }
 
     for (let spike of spikes) {
@@ -191,15 +192,29 @@ function gameplay() {
         }
     }
 
-    if (character.y > canvasHeight - 100) {
+    if (character.y > canvasHeight - blockSize) {
         console.log("HIT GROUND!");
         gameover();
     }
 
-    if (mouseIsPressed) {
-        blockManager.addRemoveBlocks();
-    }
     character.draw();
+    
+    if (mouseIsPressed) {
+        var mouse = {};
+        mouse.x = mouseX - (mouseX % blockSize);
+        mouse.y = mouseY - (mouseY % blockSize);
+        mouse.blockSize = blockSize;
+        mouse.drawBlock = true;
+        if (checkCollisionUp(character, mouse)) {
+        } else {
+            blockManager.addRemoveBlocks();
+        }
+    }
+    
+    if(debug){
+        console.log(collisionCheckCount);
+        collisionCheckCount = 0;
+    }
 }
 
 function mouseReleased() {
