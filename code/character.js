@@ -1,5 +1,5 @@
 class Character {
-    constructor(startX, startY) {
+    constructor(startX, startY, blockSize) {
         this.debugParameterInputs = [];
         this.parameters = {
             // Vertical movement
@@ -17,15 +17,15 @@ class Character {
             ySpeed: 0.0,
             xSpeed: 0.0,
         }
-        if(window.debug){
+        if (window.debug) {
             this.drawDebugMenu();
         }
         // Start position
         this.x = startX;
         this.y = startY;
-        // Sprite dimensions
-        this.width = 100;
-        this.height = 100;
+        // Character dimensions
+        this.width = blockSize;
+        this.height = blockSize;
 
         // States
         this.onGround = false;
@@ -36,14 +36,127 @@ class Character {
         this.direction = "STOP";
 
         // Sprite data for character
-        this.marioLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 3, 1, 0.3, true, 1);
-        this.marioRight = new Sprite(window.assets.images.marioRight, 99, 99, 3, 1, 0.3, true, 1);
-        this.marioStopLeft = new Sprite(window.assets.images.marioLeft, 99, 99, 1, 1, 0.1, true, 0);
-        this.marioStopRight = new Sprite(window.assets.images.marioRight, 99, 99, 1, 1, 0.1, true, 0);
+        this.marioLeft = new Sprite({
+            spriteSheet: window.assets.images.marioLeft,
+            spriteWidth: 50,
+            spriteHeight: 50,
+            xFrames: 3,
+            yFrames: 1,
+            animationSpeed: 0.3,
+            loop: true,
+            startFrame: 1
+        });
+        this.marioRight = new Sprite({
+            spriteSheet: window.assets.images.marioRight,
+            spriteWidth: 50,
+            spriteHeight: 50,
+            xFrames: 3,
+            yFrames: 1,
+            animationSpeed: 0.3,
+            loop: true,
+            startFrame: 1
+        });
+        this.marioStopLeft = new Sprite({
+            spriteSheet: window.assets.images.marioLeft,
+            spriteWidth: 50,
+            spriteHeight: 50,
+            xFrames: 1,
+            yFrames: 1,
+            animationSpeed: 0.3,
+            loop: true,
+            startFrame: 0
+        });
+        this.marioStopRight = new Sprite({
+            spriteSheet: window.assets.images.marioRight,
+            spriteWidth: 50,
+            spriteHeight: 50,
+            xFrames: 1,
+            yFrames: 1,
+            animationSpeed: 0.3,
+            loop: true,
+            startFrame: 0
+        }); 
         this.marioDirection = [this.marioStopRight, this.marioRight];
+
+        // Collisions
+        this.collisionTopDetected = false;
+        this.collisionBottomDetected = false;
+        this.collisionRightDetected = false;
+        this.collisionLeftDetected = false;
+        this.collisionBoxYIncrement = 10;
+        this.collisionBoxXIncrement = 10;
     }
 
-    reset(startX, startY){
+    get collisionBox() {
+        return {
+            leftX1: this.x + this.collisionBoxXIncrement - (this.collisionBoxXIncrement / 2),
+            leftY1: this.y + (this.height / 2),
+            leftWidth: 1,
+            leftHeight: this.height / 4 - (this.collisionBoxYIncrement / 2),
+            rightX1: this.x + this.width - (this.collisionBoxXIncrement / 2),
+            rightY1: this.y + (this.height / 2),
+            rightWidth: 1,
+            rightHeight: this.height / 4 - (this.collisionBoxYIncrement / 2),
+            topX1: this.x + (this.collisionBoxXIncrement ),
+            topY1: this.y,
+            topWidth: this.width - (this.collisionBoxXIncrement *2),
+            topHeight: 1,
+            bottomX1: this.x + this.collisionBoxXIncrement,
+            bottomY1: this.y + this.height,
+            bottomWidth: this.width - (this.collisionBoxXIncrement * 2),
+            bottomHeight: 1,
+        };
+    };
+
+    drawCollisionBox() {
+        noFill();
+        strokeWeight(4);
+        this.drawCollisionLineTop();
+        this.drawCollisionLineBottom();
+        this.drawCollisionLineRight();
+        this.drawCollisionLineLeft();
+
+    }
+
+    drawCollisionLineTop() {
+        if (this.collisionTopDetected) {
+            stroke(color("red"));
+        } else {
+            stroke(color("blue"));
+        }
+        rect(this.collisionBox.topX1, this.collisionBox.topY1, this.collisionBox.topWidth, this.collisionBox.topHeight);
+    }
+
+    drawCollisionLineBottom() {
+        if (this.collisionBottomDetected) {
+            stroke(color("red"));
+        } else {
+            stroke(color("blue"));
+        }
+        rect(this.collisionBox.bottomX1, this.collisionBox.bottomY1, this.collisionBox.bottomWidth, this.collisionBox.bottomHeight);
+    }
+
+    drawCollisionLineRight() {
+        if (this.collisionRightDetected) {
+            stroke(color("red"));
+        } else {
+            stroke(color("blue"));
+        }
+        rect(this.collisionBox.rightX1, this.collisionBox.rightY1, this.collisionBox.rightWidth, this.collisionBox.rightHeight);
+    }
+
+    drawCollisionLineLeft() {
+        if (this.collisionLeftDetected) {
+            stroke(color("red"));
+        } else {
+            stroke(color("blue"));
+        }
+        rect(this.collisionBox.leftX1, this.collisionBox.leftY1, this.collisionBox.leftWidth, this.collisionBox.rightHeight);
+    }
+
+
+
+    reset(startX, startY) {
         this.x = startX;
         this.y = startY;
     }
@@ -54,36 +167,38 @@ class Character {
         this.onGround = true;
         this.jumping = false;
         this.y = stopHeight;
+        this.collisionBottomDetected = true;
     }
 
-    hitCeiling() {
+    hitCeiling(stopHeight) {
         this.currentValues.ySpeed = 0;
         this.parameters.jumpVelocity = 0;
         this.ySpeed = 0;
+        this.y = stopHeight;
+        this.collisionTopDetected = true;
     }
 
-    hitLeftWall() {
+    rightSideCollision() {
         this.atLeftWall = true;
         this.currentValues.xSpeed = 0;
         this.direction = "STOP";
+        this.collisionRightDetected = true;
     }
 
-    hitRightWall() {
+    leftSideCollision() {
         this.atRightWall = true;
         this.currentValues.xSpeed = 0;
         this.direction = "STOP";
+        this.collisionLeftDetected = true;
     }
 
     jump() {
         this.jumping = true;
-        this.currentValues.ySpeed = (this.parameters.jumpStrength + Math.abs(this.currentValues.xSpeed/2)) * -1;
+        this.currentValues.ySpeed = (this.parameters.jumpStrength + Math.abs(this.currentValues.xSpeed / 2)) * -1;
         this.onGround = false;
     }
 
     draw() {
-        if(window.debug){
-            this.updateDebugValue();
-        }
         // GRAVITY
         if (this.onGround == false && this.currentValues.ySpeed < this.parameters.topYSpeed) {
             this.currentValues.ySpeed += this.parameters.gravity;
@@ -162,10 +277,23 @@ class Character {
         }
         this.x += this.currentValues.xSpeed;
         // console.log(this.currentValues.xSpeed);
+
+        // DEBUGGING
+        if (window.debug) {
+            this.updateDebugValue();
+            this.drawCollisionBox();
+        }
+
         // These reset the values back for the next draw loop
         this.onGround = false;
         this.atLeftWall = false;
         this.atRightWall = false;
+        this.collisionTopDetected = false;
+        this.collisionBottomDetected = false;
+        this.collisionRightDetected = false;
+        this.collisionLeftDetected = false;
+
+
     }
 
     drawDebugMenu() {
@@ -189,11 +317,12 @@ class Character {
             const key = currentKeys[i];
             // Create label
             let debugLabel = createElement('label', key + ":");
-            debugLabel.position(xOffset, yOffset + (i*30) + (parameterKeys.length * 30));
+            debugLabel.position(xOffset, yOffset + (i * 30) + (parameterKeys.length * 30));
             debugLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
             // Create text box
             let debugP = createP(this.currentValues[key]);
-            debugP.position(xOffset + 115, yOffset + (i*30) + (parameterKeys.length * 30) - 15);
+            debugP.position(xOffset + 115, yOffset + (i * 30) + (parameterKeys.length * 30) - 15);
+            debugP.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
             this.debugCurrentP.push(debugP);
         }
         let button = createButton('Update parameters');

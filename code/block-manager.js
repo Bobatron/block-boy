@@ -1,5 +1,5 @@
 class BlockManager {
-    constructor() {
+    constructor(collisionChecker) {
         this.blockConfig = {};
         this.canvasWidth;
         this.canvasHeight;
@@ -9,9 +9,11 @@ class BlockManager {
         this.drawMode = false;
         this.blockConfigElements = [];
         this.limitedBlocks = false;
+        this.collisionChecker = collisionChecker;
     }
 
     load(gridSize, maxBlocks, blockStock, canvasWidth, canvasHeight) {
+        this.collisionChecker = collisionChecker;
         this.blockConfig = {
             maxBlocks: maxBlocks,
             blockStock: blockStock,
@@ -35,7 +37,7 @@ class BlockManager {
         this.drawblockConfig();
     }
 
-    drawAll() {
+    draw() {
         for (const block of this.blocks) {
             block.draw();
         }
@@ -47,6 +49,7 @@ class BlockManager {
 
     addBlock(x, y) {
         this.blocks.push(new Block(x, y, this.gridSize));
+        this.collisionChecker.addObjectToCollisionCheckGrid(this.blocks[this.blocks.length - 1]);
     }
 
     getExistingBlockIndex(x, y) {
@@ -59,6 +62,7 @@ class BlockManager {
     }
 
     removeBlock(index) {
+        this.collisionChecker.removeObjectFromCollisionCheckGrid(this.blocks[index]);
         var startArray = this.blocks.slice(0, index);
         var endArray = this.blocks.slice(index + 1, this.blocks.length);
         var returnArray = startArray.concat(endArray);
