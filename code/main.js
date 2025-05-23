@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 var collisionCheckCount = 0;
 var assets = {};
 
