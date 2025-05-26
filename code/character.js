@@ -3,21 +3,27 @@ class Character {
         this.debugParameterInputs = [];
         this.parameters = {
             // Vertical movement
-            gravity: 1,
-            jumpStrength: 20,
-            topYSpeed: 5,
+            // The jump/fall deceleration/acceleration amount
+            gravityStrength: 0.05,
+            jumpStrength: 10.0,
+            topYSpeed: 5.0,
+            maxFallSpeed: 10.0,
             // Horizontal movement
-            acceleration: 0.3,
-            decceleration: 0.5,
-            topXSpeed: 5,
+            groundAcceleration: 0.3,
+            groundDeceleration: 0.5,
+            topXSpeed: 5.0,
         };
 
         this.debugCurrentP = [];
         this.currentValues = {
             ySpeed: 0.0,
             xSpeed: 0.0,
+            gravityAccelleration: 0.0,
+            gravityDeceleration: 0.0,
+            jumpSpeed: 0.0,
+            fallSpeed: 0.0,
         }
-        if (window.debug) {
+        if (debug) {
             this.drawDebugMenu();
         }
         // Start position
@@ -36,47 +42,47 @@ class Character {
         this.direction = "STOP";
 
         // Sprite data for character
-        this.marioLeft = new Sprite({
-            spriteSheet: window.assets.images.marioLeft,
-            spriteWidth: 50,
-            spriteHeight: 50,
-            xFrames: 3,
+        this.blockBoyLeft = new Sprite({
+            spriteSheet: window.assets.images.blockBoyLeft,
+            spriteWidth: 400,
+            spriteHeight: 456,
+            xFrames: 4,
             yFrames: 1,
             animationSpeed: 0.3,
             loop: true,
             startFrame: 1
         });
-        this.marioRight = new Sprite({
-            spriteSheet: window.assets.images.marioRight,
-            spriteWidth: 50,
-            spriteHeight: 50,
-            xFrames: 3,
+        this.blockBoyRight = new Sprite({
+            spriteSheet: window.assets.images.blockBoyRight,
+            spriteWidth: 400,
+            spriteHeight: 456,
+            xFrames: 4,
             yFrames: 1,
             animationSpeed: 0.3,
             loop: true,
             startFrame: 1
         });
-        this.marioStopLeft = new Sprite({
-            spriteSheet: window.assets.images.marioLeft,
-            spriteWidth: 50,
-            spriteHeight: 50,
+        this.blockBoyStopLeft = new Sprite({
+            spriteSheet: window.assets.images.blockBoyLeft,
+            spriteWidth: 400,
+            spriteHeight: 456,
             xFrames: 1,
             yFrames: 1,
             animationSpeed: 0.3,
             loop: true,
             startFrame: 0
         });
-        this.marioStopRight = new Sprite({
-            spriteSheet: window.assets.images.marioRight,
-            spriteWidth: 50,
-            spriteHeight: 50,
+        this.blockBoyStopRight = new Sprite({
+            spriteSheet: window.assets.images.blockBoyRight,
+            spriteWidth: 400,
+            spriteHeight: 465,
             xFrames: 1,
             yFrames: 1,
             animationSpeed: 0.3,
             loop: true,
             startFrame: 0
-        }); 
-        this.marioDirection = [this.marioStopRight, this.marioRight];
+        });
+        this.marioDirection = [this.blockBoyStopRight, this.blockBoyRight];
 
         // Collisions
         this.collisionTopDetected = false;
@@ -97,9 +103,9 @@ class Character {
             rightY1: this.y + (this.height / 2),
             rightWidth: 1,
             rightHeight: this.height / 4 - (this.collisionBoxYIncrement / 2),
-            topX1: this.x + (this.collisionBoxXIncrement ),
+            topX1: this.x + (this.collisionBoxXIncrement * 2),
             topY1: this.y,
-            topWidth: this.width - (this.collisionBoxXIncrement *2),
+            topWidth: this.width - (this.collisionBoxXIncrement * 4),
             topHeight: 1,
             bottomX1: this.x + this.collisionBoxXIncrement,
             bottomY1: this.y + this.height,
@@ -154,16 +160,14 @@ class Character {
         rect(this.collisionBox.leftX1, this.collisionBox.leftY1, this.collisionBox.leftWidth, this.collisionBox.rightHeight);
     }
 
-
-
     reset(startX, startY) {
         this.x = startX;
         this.y = startY;
     }
 
     hitFloor(stopHeight) {
+        this.currentValues.fallSpeed = 0;
         this.currentValues.ySpeed = 0;
-        this.parameters.jumpVelocity = 0;
         this.onGround = true;
         this.jumping = false;
         this.y = stopHeight;
@@ -172,86 +176,106 @@ class Character {
 
     hitCeiling(stopHeight) {
         this.currentValues.ySpeed = 0;
-        this.parameters.jumpVelocity = 0;
-        this.ySpeed = 0;
+        this.currentValues.jumpSpeed = 0;
         this.y = stopHeight;
         this.collisionTopDetected = true;
     }
 
-    rightSideCollision() {
+    rightSideCollision(stopX) {
         this.atLeftWall = true;
         this.currentValues.xSpeed = 0;
         this.direction = "STOP";
         this.collisionRightDetected = true;
+        this.x = stopX + this.collisionBoxXIncrement;
     }
 
-    leftSideCollision() {
+    leftSideCollision(stopX) {
         this.atRightWall = true;
         this.currentValues.xSpeed = 0;
+        this.x = stopX - this.collisionBoxXIncrement;
         this.direction = "STOP";
         this.collisionLeftDetected = true;
     }
 
     jump() {
         this.jumping = true;
-        this.currentValues.ySpeed = (this.parameters.jumpStrength + Math.abs(this.currentValues.xSpeed / 2)) * -1;
+        this.jumpKeyReleased = false;
+        this.currentValues.jumpSpeed = (this.parameters.jumpStrength + Math.abs(this.currentValues.xSpeed / 2));
         this.onGround = false;
+        this.y -= 1;
     }
 
     draw() {
         // GRAVITY
-        if (this.onGround == false && this.currentValues.ySpeed < this.parameters.topYSpeed) {
-            this.currentValues.ySpeed += this.parameters.gravity;
+        if (this.onGround == false && this.currentValues.jumpSpeed > 0 && this.jumping == true && this.jumpKeyReleased == false) {
+            this.currentValues.gravityAccelleration = 0.0;
+            this.currentValues.gravityDeceleration += this.parameters.gravityStrength;
+            this.currentValues.jumpSpeed -= this.currentValues.gravityDeceleration;
+            this.currentValues.jumpSpeed = Math.max(this.currentValues.jumpSpeed, 0);
+            this.y -= this.currentValues.jumpSpeed;
+        } else if (this.onGround == false && this.currentValues.jumpSpeed > 0 && this.jumping == true && this.jumpKeyReleased == true) {
+            this.currentValues.gravityAccelleration = 0.0;
+            this.currentValues.gravityDeceleration += (this.parameters.gravityStrength * 10);
+            this.currentValues.jumpSpeed -= this.currentValues.gravityDeceleration;
+            this.currentValues.jumpSpeed = Math.max(this.currentValues.jumpSpeed, 0);
+            this.y -= this.currentValues.jumpSpeed;
+        } else if (this.onGround == false && (this.currentValues.jumpSpeed <= 0)) {
+            this.currentValues.gravityDeceleration = 0.0;
+            this.currentValues.gravityAccelleration += this.parameters.gravityStrength;
+            this.currentValues.fallSpeed = this.currentValues.fallSpeed + this.currentValues.gravityAccelleration;
+            this.currentValues.fallSpeed = Math.min(this.currentValues.fallSpeed, this.parameters.maxFallSpeed);
+            this.y += this.currentValues.fallSpeed;
         } else if (this.onGround == true) {
-            this.currentValues.ySpeed = 0;
+            this.currentValues.gravityAccelleration = 0.0;
+            this.currentValues.gravityDeceleration = 0.0;
+            this.currentValues.jumpSpeed = 0.0;
+            this.currentValues.fallSpeed = 0.0;
         }
-        this.y += this.currentValues.ySpeed;
 
-        // ellipse(this.x, this.y, this.width, this.height);
-        // this.marioLeft.draw(this.x, this.y, this.width, this.height);
+
         //  MOVING AND STANDING LEFT
         if (keyIsDown(LEFT_ARROW) && this.atRightWall == false) {
             if (this.currentValues.xSpeed <= 0 && (this.direction == "STOP" || this.direction == "RIGHT")) {
                 this.direction = "LEFT";
-                this.marioDirection = [this.marioStopLeft, this.marioLeft];
+                this.marioDirection = [this.blockBoyStopLeft, this.blockBoyLeft];
             }
             if (this.direction == "RIGHT") {
-                this.currentValues.xSpeed -= this.parameters.acceleration;
+                this.currentValues.xSpeed -= this.parameters.groundAcceleration;
             }
             if (this.direction == "LEFT" && this.currentValues.xSpeed > this.parameters.topXSpeed * -1) {
-                this.currentValues.xSpeed -= this.parameters.acceleration;
+                this.currentValues.xSpeed -= this.parameters.groundAcceleration;
             }
             //  MOVING AND STANDING RIGHT
         } else if (keyIsDown(RIGHT_ARROW) && this.atLeftWall == false) {
             if (this.currentValues.xSpeed >= 0 && (this.direction == "STOP" || this.direction == "LEFT")) {
                 this.direction = "RIGHT";
-                this.marioDirection = [this.marioStopRight, this.marioRight];
+                this.marioDirection = [this.blockBoyStopRight, this.blockBoyRight];
             }
             if (this.direction == "LEFT") {
-                this.currentValues.xSpeed += this.parameters.acceleration;
+                this.currentValues.xSpeed += this.parameters.groundAcceleration;
             }
             if (this.direction == "RIGHT" && this.currentValues.xSpeed < this.parameters.topXSpeed) {
-                this.currentValues.xSpeed += this.parameters.acceleration;
+                this.currentValues.xSpeed += this.parameters.groundAcceleration;
             }
         } else {
             // ELSE NO LEFT OF RIGHT KEY PRESS
             // IF SPEED BETWEEN -VE AND +VE ACCELERATION STOP MOVING CHARACTER
-            if (this.currentValues.xSpeed > (this.parameters.acceleration + 0.1) * -1 && this.currentValues.xSpeed < this.parameters.acceleration + 0.1) {
+            if (this.currentValues.xSpeed > (this.parameters.groundAcceleration + 0.1) * -1 && this.currentValues.xSpeed < this.parameters.groundAcceleration + 0.1) {
                 this.currentValues.xSpeed = 0;
                 this.direction = "STOP";
             }
             // IF SPEED IN RIGHT DIRECTION THEN SLOW IT DOWN
             if (this.currentValues.xSpeed > 0.0) {
-                this.currentValues.xSpeed -= this.parameters.decceleration;
+                this.currentValues.xSpeed -= this.parameters.groundDeceleration;
             }
-            if (this.currentValues.xSpeed > 0.0 && this.currentValues.xSpeed < this.parameters.decceleration) {
+            if (this.currentValues.xSpeed > 0.0 && this.currentValues.xSpeed < this.parameters.groundDeceleration) {
                 this.currentValues.xSpeed = 0;
             }
             // IF SPEED IN LEFT DIRECTION THEN SLOW IT DOWN
             if (this.currentValues.xSpeed < 0.0) {
-                this.currentValues.xSpeed += this.parameters.decceleration;
+                this.currentValues.xSpeed += this.parameters.groundDeceleration;
             }
-            if (this.currentValues.xSpeed < 0.0 && this.currentValues.xSpeed > (this.parameters.decceleration * -1)) {
+            if (this.currentValues.xSpeed < 0.0 && this.currentValues.xSpeed > (this.parameters.groundDeceleration * -1)) {
                 this.currentValues.xSpeed = 0;
             }
         }
@@ -259,14 +283,11 @@ class Character {
         if (keyIsDown(CONTROL) && this.jumping == false && this.onGround == true && this.jumpKeyReleased == true) {
             window.assets.sounds.jump[int(random(0, 3))].play();
             this.jump();
-            this.y -= 1;
-            this.jumpKeyReleased = false;
-            // ADDED THIS
-            this.onGround = false;
         }
         // UNSET THIS FLAG TO ALLOW JUMP ACTION TO BE PERFORMED AGAIN
         if (!keyIsDown(CONTROL) && this.jumpKeyReleased == false) {
             this.jumpKeyReleased = true;
+            console.log("Jump key released");
         }
 
         // WHETHER TO DRAW STATIC OR MOVING MARIO
@@ -276,11 +297,12 @@ class Character {
             this.marioDirection[1].draw(this.x, this.y, this.width, this.height);
         }
         this.x += this.currentValues.xSpeed;
-        // console.log(this.currentValues.xSpeed);
 
         // DEBUGGING
-        if (window.debug) {
+        if (debug) {
             this.updateDebugValue();
+        }
+        if (collisionDebug) {
             this.drawCollisionBox();
         }
 
@@ -306,10 +328,10 @@ class Character {
             // Create label
             let debugLabel = createElement('label', key);
             debugLabel.position(xOffset, yOffset + i * 30);
-            debugLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
+            debugLabel.style('color', '#FFFFFF'); 
             // Create input box
             let debugInput = createInput(this.parameters[key].toString());
-            debugInput.position(xOffset + 100, yOffset + i * 30);
+            debugInput.position(xOffset + 150, yOffset + i * 30);
             this.debugParameterInputs.push(debugInput);
         }
         const currentKeys = Object.keys(this.currentValues);
@@ -318,11 +340,11 @@ class Character {
             // Create label
             let debugLabel = createElement('label', key + ":");
             debugLabel.position(xOffset, yOffset + (i * 30) + (parameterKeys.length * 30));
-            debugLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
+            debugLabel.style('color', '#FFFFFF'); 
             // Create text box
             let debugP = createP(this.currentValues[key]);
-            debugP.position(xOffset + 115, yOffset + (i * 30) + (parameterKeys.length * 30) - 15);
-            debugP.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
+            debugP.position(xOffset + 150, yOffset + (i * 30) + (parameterKeys.length * 30) - 15);
+            debugP.style('color', '#FFFFFF'); 
             this.debugCurrentP.push(debugP);
         }
         let button = createButton('Update parameters');

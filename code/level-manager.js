@@ -27,7 +27,9 @@ class LevelManager {
                 }
             }
         }
-        console.log("Start Position: ", startPosition);
+        if(debug){
+            console.log("Start Position: ", startPosition);
+        }
         return startPosition.x ? startPosition : { x: 0, y: 0 };
     }
 
@@ -41,7 +43,9 @@ class LevelManager {
                 }
             }
         }
-        console.log("Goal Position: ", goalPosition);
+        if(debug){
+            console.log("Goal Position: ", goalPosition);
+        }
         return goalPosition.x ? goalPosition : { x: 0, y: 0 };
     }
 
