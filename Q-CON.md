@@ -5,14 +5,15 @@
 1. Add a better debug mode for developing and testing collisions
 2. Consider changing the collision approach (e.g. cross)
 3. Split out the collisions classes into smaller more readable classes
-- [ ] Fix jumping so that player jumps in arc
-- [ ] Swap the mario asset for block boy custom asset
+- [X] Fix jumping so that player jumps in arc
+- [X] Swap the mario asset for block boy custom asset
 - [ ] Add timer to levels
 - [ ] Add scoring to levels
 - [ ] Add lives
 - [ ] Better win/lose screens with scores
-- [ ] Create block boy logo for socials
+- [X] Create block boy logo for socials
 - [ ] Create social account / web presence
+- [ ] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
 
 ## Should Have
 - [ ] Controller support
