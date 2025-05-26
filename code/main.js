@@ -1,4 +1,5 @@
-var debug = true;
+var debug = false;
+var collisionDebug = false;
 var collisionCheckCount = 0;
 var assets = {};
 
@@ -13,8 +14,8 @@ function preload() {
     assets.images.blockRed = loadImage("assets/images/block-red.png");
     assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
     assets.images.blockSpike = loadImage("assets/images/block-spike.png");
-    assets.images.marioLeft = loadImage("assets/images/mario-left.png");
-    assets.images.marioRight = loadImage("assets/images/mario-right.png");
+    assets.images.blockBoyLeft = loadImage("assets/images/block-boy-left.png");
+    assets.images.blockBoyRight = loadImage("assets/images/block-boy-right.png");
     assets.images.goal = loadImage("assets/images/goal.png");
     assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
@@ -108,7 +109,9 @@ function loadLevel() {
     maxBlocks = levelManager.getLevelConfig().maxBlocks;
     blockStock = levelManager.getLevelConfig().blockStock;
     blockManager.load(blockSize, maxBlocks, blockStock, canvasWidth, canvasHeight);
-    console.log("CollisionGrid Length ", collisionChecker.collisionCheckGrid);
+    if(collisionDebug){
+        console.log("Collision grid: ", collisionChecker.collisionCheckGrid);
+    }
 }
 
 function winLevel() {
@@ -187,13 +190,18 @@ function gameplay() {
     for (let spike of spikes) {
         spike.draw();
         if (checkCollisionRect(character, spike)) {
-            console.log("YOWZA!");
+            if(collisionDebug){
+                console.log("YOWZA!");
+            }
             gameover();
         }
     }
 
     if (character.y > canvasHeight - blockSize) {
-        console.log("HIT GROUND!");
+        if(collisionDebug){
+            console.log("HIT GROUND!");
+        }
+        
         gameover();
     }
 
@@ -211,7 +219,7 @@ function gameplay() {
         }
     }
     
-    if(debug){
+    if(collisionDebug){
         console.log(collisionCheckCount);
         collisionCheckCount = 0;
     }

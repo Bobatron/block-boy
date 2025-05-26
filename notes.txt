@@ -37,3 +37,33 @@ Also need to disable being able to draw a block on player
 - add a sound for this (so player knows can't draw) TRIED THIS AND WAS WEIRD (MAYBE TRY AGAIN LATER WITH FUNNY SOUND)
 
 - Starting to notice slow down with collision detection. Can add a check on location to see if worth doing full collision check. FIXED
+
+
+
+GRAVITY 
+
+- On the jump ascent, jump strength should set the initial y speed DONE
+
+- If the player is moving in an x direction - this should boost the jump strength DONE
+
+- If the player stationary - once in air - the ability to change x movement should be limited
+
+- If a player is moving in x direction - this momentum should be continued to the jump
+
+- There should be a jumpSpeed used for ascent of jump DONE
+
+- There should be a fallSpeed used for descent of jump and for falling DONE
+
+- The jumpSpeed should decrease by gravity every frame DONE
+
+- Gravity should start at 0 for jump and increase by gravity strength every frame DONE
+
+- The fallSpeed should increase by gravity every frame DONE
+
+- Gravity should start at 0 for fall and increase by gravity strength every frame DONE
+
+OTHER
+- Shrink the top collision to allow jumping from edge when at end of a block tunnel DONE
+- Disable the top collision that pushed you down when player is on the ground FIXED BY REDUCING WIDTH OF TOP COLLISION
+- Calulate left/right collisions first before doing top (this might removed need for previous action)
+
