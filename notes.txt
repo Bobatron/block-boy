@@ -67,3 +67,7 @@ OTHER
 - Disable the top collision that pushed you down when player is on the ground FIXED BY REDUCING WIDTH OF TOP COLLISION
 - Calulate left/right collisions first before doing top (this might removed need for previous action)
 
+
+
+After next push - update the project to typescript if easy
+and refactor code to make it use typescript features
