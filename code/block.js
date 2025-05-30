@@ -1,30 +1,19 @@
-class Block {
+class Block extends LevelObject {
     constructor(x, y, blockSize){
-        window.assets.sounds.popCreate.play();
+        super(x, y, blockSize, null, false, "block");
         this.blockGreen = window.assets.images.blockGreen.get();
         this.blockRed = window.assets.images.blockRed.get();
-        this.blockCurrent = this.blockGreen;
-        this.x = x;
-        this.y = y;
-        this.location = x + ":" + y;
-        this.blockSize = blockSize;
-    }
-
-    getLocation(){
-        return this.x + ":" + this.y;
-    }
-
-    draw(){
-        image(this.blockCurrent, this.x, this.y, this.blockSize, this.blockSize);
+        this.setImage(this.blockGreen);
     }
 
     changeToRed(){
-        this.blockCurrent = this.blockRed;
+        this.setImage(this.blockRed);
     }
 
-    playRemoveSound(){
-        window.assets.sounds.popRemove.play();
+    changeToGreen(){
+        this.setImage(this.blockGreen);
     }
-
 }
 
+// Make Block globally accessible
+window.Block = Block;

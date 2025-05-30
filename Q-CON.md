@@ -9,7 +9,7 @@
 - [X] Swap the mario asset for block boy custom asset
 - [ ] Add timer to levels
 - [ ] Add scoring to levels
-- [ ] Add lives
+- [X] Add lives
 - [ ] Better win/lose screens with scores
 - [X] Create block boy logo for socials
 - [ ] Create social account / web presence

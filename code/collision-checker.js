@@ -42,7 +42,7 @@ class CollisionChecker {
     }
 }
 
-function checkCollisionDown(character, obstacle) {
+function checkCharacterCollisionDown(character, obstacle, updateCharacterPosition = true) {
     collisionCheckCount++;
     if (!character.onGround && (
         character.collisionBox.bottomX1 < obstacle.x + obstacle.blockSize &&
@@ -54,14 +54,16 @@ function checkCollisionDown(character, obstacle) {
             if(collisionDebug){
                 console.log("HIT FLOOR!");
             }
-            character.hitFloor(obstacle.y - obstacle.blockSize);
+            if (updateCharacterPosition) {
+                character.hitFloor(obstacle.y - obstacle.blockSize);
+            }
         }
         return true;
     }
     return false;
 }
 
-function checkCollisionUp(character, obstacle) {
+function checkCharacterCollisionUp(character, obstacle) {
     collisionCheckCount++;
     if (
         character.collisionBox.topX1 < obstacle.x + obstacle.blockSize &&
@@ -81,7 +83,7 @@ function checkCollisionUp(character, obstacle) {
     return false;
 }
 
-function checkCollisionRightSide(character, obstacle) {
+function checkCharacterCollisionRightSide(character, obstacle) {
     collisionCheckCount++;
     if ((
         character.collisionBox.rightX1 < obstacle.x + obstacle.blockSize &&
@@ -100,7 +102,7 @@ function checkCollisionRightSide(character, obstacle) {
     return false;
 }
 
-function checkCollisionLeftSide(character, obstacle) {
+function checkCharacterCollisionLeftSide(character, obstacle) {
     collisionCheckCount++;
     if ((
         character.collisionBox.leftX1 < obstacle.x + obstacle.blockSize &&
@@ -119,16 +121,32 @@ function checkCollisionLeftSide(character, obstacle) {
     return false;
 }
 
-function checkCollisionRect(character, rectangle) {
+function checkCharacterCollisionRect(character, object) {
     collisionCheckCount++;
     if ((
-        character.collisionBox.leftX1 + (character.collisionBoxXIncrement / 2) < rectangle.x + rectangle.blockSize &&
-        character.collisionBox.leftX1 + (character.collisionBox.rightX1 - character.collisionBox.leftX1) - (character.collisionBoxXIncrement / 2) > rectangle.x &&
-        character.y < rectangle.y + rectangle.blockSize &&
-        character.y + character.height > rectangle.y
+        character.collisionBox.leftX1 + (character.collisionBoxXIncrement / 2) < object.x + object.blockSize &&
+        character.collisionBox.leftX1 + (character.collisionBox.rightX1 - character.collisionBox.leftX1) - (character.collisionBoxXIncrement / 2) > object.x &&
+        character.y < object.y + object.blockSize &&
+        character.y + character.height > object.y
     )) {
         if(collisionDebug){
-            console.log("COLLISION!");
+            console.log(`Collision detected between character and ${object.type}`);
+        }
+        return true;
+    }
+    return false;
+}
+
+function checkObjectCollisionRect(object1, object2) {
+    collisionCheckCount++;
+    if ((
+        object1.x < object2.x + object2.blockSize &&
+        object1.x + object1.blockSize > object2.x &&
+        object1.y < object2.y + object2.blockSize &&
+        object1.y + object1.blockSize > object2.y
+    )) {
+        if(collisionDebug){
+            console.log(`Collision detected between ${object1.type} and ${object2.type}`);
         }
         return true;
     }

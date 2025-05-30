@@ -1,5 +1,6 @@
 class Character {
-    constructor(startX, startY, blockSize) {
+    constructor(startX, startY, blockSize, lives) {
+        this.lives = lives;
         this.debugParameterInputs = [];
         this.parameters = {
             // Vertical movement
@@ -30,6 +31,7 @@ class Character {
         this.x = startX;
         this.y = startY;
         // Character dimensions
+        this.blockSize = blockSize;
         this.width = blockSize;
         this.height = blockSize;
 
@@ -314,8 +316,6 @@ class Character {
         this.collisionBottomDetected = false;
         this.collisionRightDetected = false;
         this.collisionLeftDetected = false;
-
-
     }
 
     drawDebugMenu() {

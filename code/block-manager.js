@@ -32,7 +32,6 @@ class BlockManager {
         this.blocks = [];
         this.mouseClicked = false;
         this.drawMode = false;
-        this.removeblockConfig();
         this.blockConfigElements = [];
         this.drawblockConfig();
     }
@@ -50,6 +49,7 @@ class BlockManager {
     addBlock(x, y) {
         this.blocks.push(new Block(x, y, this.gridSize));
         this.collisionChecker.addObjectToCollisionCheckGrid(this.blocks[this.blocks.length - 1]);
+        window.assets.sounds.popCreate.play();
     }
 
     getExistingBlockIndex(x, y) {
@@ -66,6 +66,7 @@ class BlockManager {
         var startArray = this.blocks.slice(0, index);
         var endArray = this.blocks.slice(index + 1, this.blocks.length);
         var returnArray = startArray.concat(endArray);
+        assets.sounds.popRemove.play();
         return returnArray;
     }
 
@@ -94,11 +95,9 @@ class BlockManager {
             this.updateBlockStock();
         } else if (this.drawMode == false && existingBlockIndex != -1 && this.blocks.length > 0) {
             this.blocks = this.removeBlock(existingBlockIndex);
-            assets.sounds.popRemove.play();
         } else if (existingBlockIndex == -1 && this.drawMode == true && this.blocks.length == this.blockConfig.maxBlocks && (this.blockConfig.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
             if (this.blocks.length > 0) {
                 this.blocks = this.removeBlock(0);
-                assets.sounds.popRemove.play();
             }
             if (this.blocks.length === this.blockConfig.maxBlocks - 1 && (this.blockConfig.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
                 this.addBlock(mouseGridPosX, mouseGridPosY);
