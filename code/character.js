@@ -45,7 +45,7 @@ class Character {
 
         // Sprite data for character
         this.blockBoyLeft = new Sprite({
-            spriteSheet: window.assets.images.blockBoyLeft,
+            spriteSheet: window.assets.images.blockBoyLeft.image,
             spriteWidth: 400,
             spriteHeight: 456,
             xFrames: 4,
@@ -55,7 +55,7 @@ class Character {
             startFrame: 1
         });
         this.blockBoyRight = new Sprite({
-            spriteSheet: window.assets.images.blockBoyRight,
+            spriteSheet: window.assets.images.blockBoyRight.image,
             spriteWidth: 400,
             spriteHeight: 456,
             xFrames: 4,
@@ -65,7 +65,7 @@ class Character {
             startFrame: 1
         });
         this.blockBoyStopLeft = new Sprite({
-            spriteSheet: window.assets.images.blockBoyLeft,
+            spriteSheet: window.assets.images.blockBoyLeft.image,
             spriteWidth: 400,
             spriteHeight: 456,
             xFrames: 1,
@@ -75,7 +75,7 @@ class Character {
             startFrame: 0
         });
         this.blockBoyStopRight = new Sprite({
-            spriteSheet: window.assets.images.blockBoyRight,
+            spriteSheet: window.assets.images.blockBoyRight.image,
             spriteWidth: 400,
             spriteHeight: 465,
             xFrames: 1,

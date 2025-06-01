@@ -1,8 +1,8 @@
 class Block extends LevelObject {
     constructor(x, y, blockSize){
         super(x, y, blockSize, null, false, "block");
-        this.blockGreen = window.assets.images.blockGreen.get();
-        this.blockRed = window.assets.images.blockRed.get();
+        this.blockGreen = window.assets.images.blockGreen.image;
+        this.blockRed = window.assets.images.blockRed.image;
         this.setImage(this.blockGreen);
     }
 

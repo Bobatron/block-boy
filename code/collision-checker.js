@@ -7,7 +7,9 @@ class CollisionChecker {
     }
 
     initializeCollisionCheckGrid() {
+        // This first line resets the grid to an empty state
         this.collisionCheckGrid.length = 0;
+        
         const width = Math.floor(this.canvasWidth / this.blockSize);
         const height = Math.floor(this.canvasHeight / this.blockSize);
 
