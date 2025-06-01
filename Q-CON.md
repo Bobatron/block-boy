@@ -13,7 +13,9 @@
 - [ ] Better win/lose screens with scores
 - [X] Create block boy logo for socials
 - [ ] Create social account / web presence
-- [ ] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
+- [Xe] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
+- [ ] QR Code level
+- [ ] Level config allow to configure the block size, x/y block count - jump/movement needs to factor in block size
 
 ## Should Have
 - [ ] Controller support
@@ -30,4 +32,4 @@
 2. if player 2 runs out of blocks, and item appears that if player 1 can return to, will replenish the block stock
 - [ ] More music for levels
 - [ ] Different level themes
-- [ ] In game level editor
+- [X] In game level editor

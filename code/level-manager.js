@@ -12,7 +12,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'p') {
-                    platforms.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockYellow.get(), false, "platform"));
+                    platforms.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockYellow.image, false, "platform"));
                 }
             }
         }
@@ -56,7 +56,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'x') {
-                    spikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockSpike.get(), true, "spike"));
+                    spikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockSpike.image, true, "spike"));
                 }
             }
         }
@@ -68,7 +68,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'f') {
-                    friendlySpikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockFriendlySpike.get(), true, "friendly-spike"));
+                    friendlySpikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockFriendlySpike.image, true, "friendly-spike"));
                 }
             }
         }

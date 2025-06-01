@@ -2,7 +2,7 @@ var debug = false;
 var collisionDebug = false;
 var collisionCheckCount = 0;
 var assets = {};
-var totalLevels = 12;
+var totalLevels = 14;
 var startingLives = 5;
 
 function preload() {
@@ -12,17 +12,37 @@ function preload() {
     assets.levels = {};
     assets.levels.data = [];
     assets.levels.config = [];
-    assets.images.blockGreen = loadImage("assets/images/block-green.png");
-    assets.images.blockRed = loadImage("assets/images/block-red.png");
-    assets.images.blockYellow = loadImage("assets/images/block-yellow.png");
-    assets.images.blockSpike = loadImage("assets/images/block-spike.png");
-    assets.images.blockFriendlySpike = loadImage("assets/images/block-friendly-spike.png");
-    assets.images.blockBoyLeft = loadImage("assets/images/block-boy-left.png");
-    assets.images.blockBoyRight = loadImage("assets/images/block-boy-right.png");
-    assets.images.goal = loadImage("assets/images/goal.png");
+    assets.images.blockGreen = {};
+    assets.images.blockGreen.source = "assets/images/block-green.png";
+    assets.images.blockGreen.image = loadImage(assets.images.blockGreen.source);
+    assets.images.blockRed = {};
+    assets.images.blockRed.source = "assets/images/block-red.png";
+    assets.images.blockRed.image = loadImage(assets.images.blockRed.source);
+    assets.images.blockYellow = {};
+    assets.images.blockYellow.source = "assets/images/block-yellow.png";
+    assets.images.blockYellow.image = loadImage(assets.images.blockYellow.source);
+    assets.images.blockSpike = {};
+    assets.images.blockSpike.source = "assets/images/block-spike.png";
+    assets.images.blockSpike.image = loadImage(assets.images.blockSpike.source);
+    assets.images.blockFriendlySpike = {};
+    assets.images.blockFriendlySpike.source = "assets/images/block-friendly-spike.png";
+    assets.images.blockFriendlySpike.image = loadImage(assets.images.blockFriendlySpike.source);
+    assets.images.blockBoyLeft = {};
+    assets.images.blockBoyLeft.source = "assets/images/block-boy-left.png";
+    assets.images.blockBoyLeft.image = loadImage(assets.images.blockBoyLeft.source);
+    assets.images.blockBoyRight = {};
+    assets.images.blockBoyRight.source = "assets/images/block-boy-right.png";
+    assets.images.blockBoyRight.image = loadImage(assets.images.blockBoyRight.source);
+    assets.images.blockBoy = {};
+    assets.images.blockBoy.source = "assets/images/block-boy.png";
+    assets.images.blockBoy.image = loadImage(assets.images.blockBoy.source);
+    assets.images.goal = {};
+    assets.images.goal.source = "assets/images/goal.png";
+    assets.images.goal.image = loadImage(assets.images.goal.source);
     assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
+    assets.sounds.selectClick = loadSound("assets/sounds/select-click.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 
     for (let i = 0; i < totalLevels; i++) {
@@ -47,12 +67,13 @@ var friendlySpikes = [];
 var levelManager;
 var currentLevel = 0;
 var goal;
+var levelEditor;
 
 function setup() {
     select('body').style('background-color', '#000000'); // Set browser background to black
     createCanvas(canvasWidth, canvasHeight);
     background(51);
-    if(debug) {
+    if (debug) {
         frameRate();
     }
     gameState = 'menu';
@@ -61,7 +82,7 @@ function setup() {
     blockManager = new BlockManager(collisionChecker);
     levelManager = new LevelManager(blockSize, character);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
-    goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal, false, "goal");
+    goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal.image, false, "goal");
 }
 
 function keyPressed() {
@@ -75,6 +96,17 @@ function keyPressed() {
         textAlign(LEFT, BASELINE);
         textStyle(NORMAL);
         loadLevel();
+    }
+    if (keyCode === ESCAPE && gameState === 'menu') {
+        gameState = 'level-editor';
+        stroke(0);
+        fill(255);
+        strokeWeight(1);
+        textSize(12);
+        textFont('Arial');
+        textAlign(LEFT, BASELINE);
+        textStyle(NORMAL);
+        levelEditor = new LevelEditor(blockSize);
     }
     if (keyCode === ENTER && gameState === 'gameover') {
         gameState = 'menu';
@@ -178,8 +210,17 @@ function draw() {
         case 'wingame':
             drawWinGameScreen();
             break;
+        case 'level-editor':
+            drawLevelEditor();
+            break;
     }
 }
+
+function drawLevelEditor() {
+    background(51);
+    levelEditor.draw();
+}
+
 
 function gameplay() {
     background(51);
@@ -298,6 +339,7 @@ function gameplay() {
 }
 
 function mouseReleased() {
-    blockManager.setMouseClicked(false);
+    blockManager?.setMouseClicked(false);
+    levelEditor?.setMouseClicked(false);
 }
 
