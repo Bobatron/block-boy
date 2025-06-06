@@ -87,7 +87,8 @@ class LevelManager {
         this.levelConfig = levelConfig;
     }
 
-    drawLevelInfo() {
+    drawLevelInfo(currentScore) {
+        this.levelInfoElements = []; // Clear previous elements
         const xOffset = 20; // Position inputs outside the canvas
         const yOffset = height + 60; // Starting y position for inputs
 
@@ -100,18 +101,33 @@ class LevelManager {
         livesLeft.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
         this.levelInfoElements.push(livesLeft);
         // Create label
-        let score = createElement('label', `Score: 0`);
+        let score = createElement('label', `Score: ${currentScore}`);
         score.position(xOffset + 300, yOffset);
         score.style('font-size', '24px'); // Set font size
         score.style('font-weight', 'bold'); // Make the font bold
         score.style('font-family', 'Arial, sans-serif'); // Use a clean, game-friendly font
         score.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
         this.levelInfoElements.push(score);
+        // Create label
+        let time = createElement('label', `Time: ${this.levelConfig.time}`);
+        time.position(xOffset, yOffset + 50);
+        time.style('font-size', '24px'); // Set font size
+        time.style('font-weight', 'bold'); // Make the font bold
+        time.style('font-family', 'Arial, sans-serif'); // Use a clean, game-friendly font
+        time.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
+        this.levelInfoElements.push(time);
     }
 
     updateLevelInfo() {
         this.levelInfoElements[0].html(`Lives: ${this.character.lives}`);
+        this.levelInfoElements[2].html(`Time:  ${this.levelConfig.time}`);
     }
+
+    updateTime(elapsedSeconds) {
+        this.levelInfoElements[2].html(`Time:  ${this.levelConfig.time - elapsedSeconds}`);
+    }
+
+    
 
     removeLevelInfo() {
         for (let i = 0; i < this.levelInfoElements.length; i++) {

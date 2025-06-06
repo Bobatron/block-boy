@@ -30,6 +30,12 @@ function preload() {
     assets.images.blockBoyLeft = {};
     assets.images.blockBoyLeft.source = "assets/images/block-boy-left.png";
     assets.images.blockBoyLeft.image = loadImage(assets.images.blockBoyLeft.source);
+    assets.images.blockBoyLeftPanic = {};
+    assets.images.blockBoyLeftPanic.source = "assets/images/block-boy-left-panic.png";
+    assets.images.blockBoyLeftPanic.image = loadImage(assets.images.blockBoyLeftPanic.source);
+    assets.images.blockBoyRightPanic = {};
+    assets.images.blockBoyRightPanic.source = "assets/images/block-boy-right-panic.png";
+    assets.images.blockBoyRightPanic.image = loadImage(assets.images.blockBoyRightPanic.source);
     assets.images.blockBoyRight = {};
     assets.images.blockBoyRight.source = "assets/images/block-boy-right.png";
     assets.images.blockBoyRight.image = loadImage(assets.images.blockBoyRight.source);
@@ -39,6 +45,9 @@ function preload() {
     assets.images.goal = {};
     assets.images.goal.source = "assets/images/goal.png";
     assets.images.goal.image = loadImage(assets.images.goal.source);
+    assets.images.bg1 = {};
+    assets.images.bg1.source = "assets/images/background-1.png";
+    assets.images.bg1.image = loadImage(assets.images.bg1.source);
     assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
@@ -68,14 +77,15 @@ var levelManager;
 var currentLevel = 0;
 var goal;
 var levelEditor;
+var startMillis;
+var currentMillis;
+var score = 0;
+var timeRunningOut = false;
 
 function setup() {
     select('body').style('background-color', '#000000'); // Set browser background to black
     createCanvas(canvasWidth, canvasHeight);
     background(51);
-    if (debug) {
-        frameRate();
-    }
     gameState = 'menu';
     collisionChecker = new CollisionChecker(canvasWidth, canvasHeight, blockSize);
     character = new Character(0, 0, blockSize, startingLives);
@@ -128,6 +138,8 @@ function keyPressed() {
 }
 
 function loadLevel() {
+    timeRunningOut = false;
+    window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.bgMusic.loop();
     collisionChecker.initializeCollisionCheckGrid();
     levelManager.loadLevelData(assets.levels.data[currentLevel]);
@@ -162,10 +174,12 @@ function loadLevel() {
         console.log("Collision grid: ", collisionChecker.collisionCheckGrid);
     }
 
-    levelManager.drawLevelInfo();
+    levelManager.drawLevelInfo(score);
+    startMillis = millis();
 }
 
 function winLevel() {
+    score += calculateScore();
     blockManager.removeblockConfig();
     levelManager.removeLevelInfo();
     gameState = 'winlevel';
@@ -177,8 +191,20 @@ function winLevel() {
     }
 }
 
+function calculateScore() {
+    const elapsedSeconds = Math.floor((currentMillis - startMillis) / 1000);
+    const levelConfig = levelManager.getLevelConfig();
+    let score = Math.max(0, levelConfig.time - elapsedSeconds) * 100;
+    if (!blockManager.blockConfig.unlimitedBlocks) {
+        score += blockManager.blockConfigCurrentValues.blockStock * 100;
+    }
+    score += character.lives * 1000;
+    return score;
+}
+
 function gameover() {
     currentLevel = 0;
+    score = 0;
     character.lives = startingLives;
 }
 
@@ -223,8 +249,24 @@ function drawLevelEditor() {
 
 
 function gameplay() {
+    currentMillis = millis();
+    const elapsedSeconds = Math.floor((currentMillis - startMillis) / 1000);
+    levelManager.updateTime(elapsedSeconds);
+    if(levelManager.getLevelConfig().time - elapsedSeconds <= 0) {
+        loseLife();
+        return;
+    }
+    if(levelManager.getLevelConfig().time - elapsedSeconds <= 10 && timeRunningOut === false) {
+        timeRunningOut = true;
+        window.assets.sounds.bgMusic.rate(1.5);
+        character.blockBoyPanic();
+    }
+
     background(51);
-    text(frameRate(), 10, 10);
+    image(assets.images.bg1.image, 0, 0, canvasWidth, canvasHeight);
+    if (debug) {
+        text(frameRate(), 10, 10);
+    }
 
     // Collision check loop logic
     let startX = Math.floor(character.collisionBox.leftX1 / blockSize);

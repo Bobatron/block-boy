@@ -20,7 +20,6 @@ class BlockManager {
             unlimitedBlocks: false
         };
         this.blockConfigCurrentValues = {
-            maxBlocks: maxBlocks,
             blockStock: blockStock,
         };
         if (blockStock == 0) {
@@ -86,23 +85,23 @@ class BlockManager {
         }
         this.mouseClicked = true;
 
-        if (existingBlockIndex == -1 && this.drawMode == true && this.blocks.length < this.blockConfig.maxBlocks && (this.blockConfig.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
+        if (existingBlockIndex == -1 && this.drawMode == true && this.blocks.length < this.blockConfig.maxBlocks && (this.blockConfigCurrentValues.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
             this.addBlock(mouseGridPosX, mouseGridPosY);
             if (this.blocks.length === this.blockConfig.maxBlocks) {
                 this.blocks[0].changeToRed();
             }
-            this.blockConfig.blockStock--;
+            this.blockConfigCurrentValues.blockStock--;
             this.updateBlockStock();
         } else if (this.drawMode == false && existingBlockIndex != -1 && this.blocks.length > 0) {
             this.blocks = this.removeBlock(existingBlockIndex);
-        } else if (existingBlockIndex == -1 && this.drawMode == true && this.blocks.length == this.blockConfig.maxBlocks && (this.blockConfig.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
+        } else if (existingBlockIndex == -1 && this.drawMode == true && this.blocks.length == this.blockConfig.maxBlocks && (this.blockConfigCurrentValues.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
             if (this.blocks.length > 0) {
                 this.blocks = this.removeBlock(0);
             }
-            if (this.blocks.length === this.blockConfig.maxBlocks - 1 && (this.blockConfig.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
+            if (this.blocks.length === this.blockConfig.maxBlocks - 1 && (this.blockConfigCurrentValues.blockStock > 0 || this.blockConfig.unlimitedBlocks)) {
                 this.addBlock(mouseGridPosX, mouseGridPosY);
                 this.blocks[0].changeToRed();
-                this.blockConfig.blockStock--;
+                this.blockConfigCurrentValues.blockStock--;
                 this.updateBlockStock();
             }
         }
@@ -121,7 +120,7 @@ class BlockManager {
         maxBLocksLabel.style('color', '#FFFFFF'); // Set text color (e.g., white for visibility)
         this.blockConfigElements.push(maxBLocksLabel);
         // Create label
-        let blockStockLabel = createElement('label', `Block Stock: ${this.blockConfig.blockStock || "Unlimited"}`);
+        let blockStockLabel = createElement('label', `Block Stock: ${this.blockConfigCurrentValues.blockStock || "Unlimited"}`);
         blockStockLabel.position(xOffset + 300, yOffset);
         blockStockLabel.style('font-size', '24px'); // Set font size
         blockStockLabel.style('font-weight', 'bold'); // Make the font bold
@@ -132,7 +131,7 @@ class BlockManager {
 
     updateBlockStock() {
         if (!this.blockConfig.unlimitedBlocks) {
-            this.blockConfigElements[1].html(`Block Stock: ${this.blockConfig.blockStock}`);
+            this.blockConfigElements[1].html(`Block Stock: ${this.blockConfigCurrentValues.blockStock}`);
         }
     }
 
