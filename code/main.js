@@ -80,6 +80,7 @@ var levelEditor;
 var startMillis;
 var currentMillis;
 var score = 0;
+var finalScore = 0;
 var timeRunningOut = false;
 
 function setup() {
@@ -98,6 +99,12 @@ function setup() {
 function keyPressed() {
     if (keyCode === ENTER && gameState === 'menu') {
         gameState = 'gameplay';
+        if (character.lives <= 0) {
+            character.lives = startingLives;
+            finalScore = 0;
+            currentLevel = 0;
+            score = 0;
+        }
         stroke(0);
         fill(255);
         strokeWeight(1);
@@ -139,6 +146,7 @@ function keyPressed() {
 
 function loadLevel() {
     timeRunningOut = false;
+    character.blockBoyNormal();
     window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.bgMusic.loop();
     collisionChecker.initializeCollisionCheckGrid();
@@ -202,12 +210,6 @@ function calculateScore() {
     return score;
 }
 
-function gameover() {
-    currentLevel = 0;
-    score = 0;
-    character.lives = startingLives;
-}
-
 function loseLife() {
     blockManager.removeblockConfig();
     levelManager.removeLevelInfo();
@@ -215,7 +217,7 @@ function loseLife() {
     character.lives--;
     gameState = 'gameover';
     if (character.lives <= 0) {
-        gameover();
+        finalScore = score;
     }
 }
 
@@ -252,11 +254,11 @@ function gameplay() {
     currentMillis = millis();
     const elapsedSeconds = Math.floor((currentMillis - startMillis) / 1000);
     levelManager.updateTime(elapsedSeconds);
-    if(levelManager.getLevelConfig().time - elapsedSeconds <= 0) {
+    if (levelManager.getLevelConfig().time - elapsedSeconds <= 0) {
         loseLife();
         return;
     }
-    if(levelManager.getLevelConfig().time - elapsedSeconds <= 10 && timeRunningOut === false) {
+    if (levelManager.getLevelConfig().time - elapsedSeconds <= 10 && timeRunningOut === false) {
         timeRunningOut = true;
         window.assets.sounds.bgMusic.rate(1.5);
         character.blockBoyPanic();

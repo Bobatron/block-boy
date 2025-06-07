@@ -123,6 +123,13 @@ class Character {
         this.blockBoyStopRight.updateSprintImage(window.assets.images.blockBoyRightPanic.image);
     }
 
+    blockBoyNormal() {
+        this.blockBoyLeft.updateSprintImage(window.assets.images.blockBoyLeft.image);
+        this.blockBoyStopLeft.updateSprintImage(window.assets.images.blockBoyLeft.image);
+        this.blockBoyRight.updateSprintImage(window.assets.images.blockBoyRight.image);
+        this.blockBoyStopRight.updateSprintImage(window.assets.images.blockBoyRight.image);
+    }
+
     drawCollisionBox() {
         noFill();
         strokeWeight(4);

@@ -56,7 +56,12 @@ function drawGameOverScreen() {
     textFont('Impact');
     text('BLOCK BOY', width / 2, 150);
     textSize(30);
-    text('MADE BY ROCKET BROS.', width / 2, 180);
+    if(finalScore > 0){
+        text(`SCORE: ${finalScore}`, width / 2, 180);
+    } else {
+        text('MADE BY ROCKET BROS.', width / 2, 180);
+    }
+    
     textSize(50);
     fill(0, 255, 0);
     text('GAME OVER 😭', width / 2, 295);
