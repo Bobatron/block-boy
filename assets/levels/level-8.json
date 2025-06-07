@@ -1,4 +1,5 @@
 {
     "maxBlocks": 2,
-    "blockStock": 0
+    "blockStock": 0,
+    "time": 30
 }

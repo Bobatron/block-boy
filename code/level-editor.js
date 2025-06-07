@@ -70,7 +70,7 @@ class LevelEditor {
 
     updateObjects() {
         if (mouseIsPressed) {
-            if (mouseX > canvasWidth || mouseX < 0 || mouseY > canvasHeight || mouseY < 0)
+            if (mouseX >= canvasWidth || mouseX < 0 || mouseY >= canvasHeight || mouseY < 0)
                 return; // Don't do anything as outside the canvas bounds
 
             let mouseGridPosX = mouseX - (mouseX % this.blockSize);

@@ -67,7 +67,7 @@ class Character {
         this.blockBoyStopLeft = new Sprite({
             spriteSheet: window.assets.images.blockBoyLeft.image,
             spriteWidth: 400,
-            spriteHeight: 456,
+            spriteHeight: 460,
             xFrames: 1,
             yFrames: 1,
             animationSpeed: 0.3,
@@ -77,7 +77,7 @@ class Character {
         this.blockBoyStopRight = new Sprite({
             spriteSheet: window.assets.images.blockBoyRight.image,
             spriteWidth: 400,
-            spriteHeight: 465,
+            spriteHeight: 460,
             xFrames: 1,
             yFrames: 1,
             animationSpeed: 0.3,
@@ -115,6 +115,13 @@ class Character {
             bottomHeight: 1,
         };
     };
+
+    blockBoyPanic() {
+        this.blockBoyLeft.updateSprintImage(window.assets.images.blockBoyLeftPanic.image);
+        this.blockBoyStopLeft.updateSprintImage(window.assets.images.blockBoyLeftPanic.image);
+        this.blockBoyRight.updateSprintImage(window.assets.images.blockBoyRightPanic.image);
+        this.blockBoyStopRight.updateSprintImage(window.assets.images.blockBoyRightPanic.image);
+    }
 
     drawCollisionBox() {
         noFill();
