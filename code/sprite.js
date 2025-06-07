@@ -11,6 +11,7 @@ class Sprite {
         this.loop = loop;
         this.xFrames = xFrames;
         this.yFrames = yFrames;
+        this.startFrame = startFrame;
         this.populateSpriteImages();
     }
 
@@ -29,7 +30,7 @@ class Sprite {
     populateSpriteImages() {
         this.spriteImages = [];
         for (var y = 0; y < this.yFrames; y++) {
-            for (var x = 0; x < this.xFrames; x++) {
+            for (var x = this.startFrame; x < this.xFrames; x++) {
                 this.spriteImages.push(this.spriteSheet.get(x * this.spriteWidth, y * this.spriteHeight, this.spriteWidth, this.spriteHeight));
             }
         }
