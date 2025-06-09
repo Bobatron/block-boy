@@ -8,6 +8,11 @@ class LevelEditor {
                 type: 'platform',
                 symbol: 'p'
             },
+            rock: {
+                asset: window.assets.images.blockGrey,
+                type: 'rock',
+                symbol: 'r'
+            },
             spike: {
                 asset: window.assets.images.blockSpike,
                 type: 'spike',
@@ -42,6 +47,7 @@ class LevelEditor {
 
         this.drawMode = true;
         this.mouseClicked = false;
+        this.mouseIcon = new MouseIcon(30);
     }
 
     getObjectsGridX(x) {
@@ -56,6 +62,7 @@ class LevelEditor {
         this.grid.draw();
         this.updateObjects();
         this.drawObjects();
+        this.mouseIcon.drawPencil();
     }
 
     addObjectToGrid(mouseGridPosX, mouseGridPosY) {
@@ -152,7 +159,6 @@ class LevelEditor {
 
         let copyButton = createButton('Copy Level to Clipboard');
         copyButton.position(canvasWidth + 50, 200 + keys.length * 50);
-        this.selectedDrawObjectImgElement.size(this.blockSize, this.blockSize);
         copyButton.mousePressed(() => {
             this.copyLevelToClipboard();
         });

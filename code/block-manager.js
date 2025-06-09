@@ -10,6 +10,7 @@ class BlockManager {
         this.blockConfigElements = [];
         this.limitedBlocks = false;
         this.collisionChecker = collisionChecker;
+        this.locked = false;
     }
 
     load(gridSize, maxBlocks, blockStock, canvasWidth, canvasHeight) {
@@ -70,6 +71,9 @@ class BlockManager {
     }
 
     addRemoveBlocks() {
+        if(this.locked)
+            return;
+        
         var mouseGridPosX = mouseX - (mouseX % this.gridSize);
         var mouseGridPosY = mouseY - (mouseY % this.gridSize);
         if (mouseGridPosX > this.canvasWidth - this.gridSize || mouseGridPosY > this.canvasHeight - this.gridSize) {
