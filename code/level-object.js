@@ -14,6 +14,9 @@ class LevelObject {
             case 'platform':
                 this.symbol = 'p';
                 break;
+            case 'rock':
+                this.symbol = 'r';
+                break;
             case 'friendly-spike':
                 this.symbol = 'f';
                 break;

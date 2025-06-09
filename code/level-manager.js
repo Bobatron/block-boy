@@ -5,9 +5,46 @@ class LevelManager {
         this.blockSize = blockSize;
         this.levelInfoElements = [];
         this.character = character;
+        this.platforms = [];
+        this.rocks = [];
+        this.spikes = [];
+        this.friendlySpikes = [];
+        this.startPosition = { x: 0, y: 0 };
+        this.goalPosition = { x: 0, y: 0 };
     }
 
-    getPlatforms() {
+    draw() {
+        this.drawPlatforms();
+        this.drawRocks();
+        this.drawSpikes();
+        this.drawFriendlySpikes();
+    }
+
+    drawPlatforms() {
+        for (let platform of this.platforms) {
+            platform.draw();
+        }
+    }
+
+    drawRocks() {
+        for (let rock of this.rocks) {
+            rock.draw();
+        }
+    }
+
+    drawSpikes() {
+        for (let spike of this.spikes) {
+            spike.draw();
+        }
+    }
+
+    drawFriendlySpikes() {
+        for (let friendlySpike of this.friendlySpikes) {
+            friendlySpike.draw();
+        }
+    }
+
+    loadPlatforms() {
         let platforms = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
@@ -19,7 +56,19 @@ class LevelManager {
         return platforms;
     }
 
-    getStartPosition() {
+    loadRocks() {
+        let rocks = [];
+        for (let r = 0; r < this.levelData.getRowCount(); r++) {
+            for (let c = 0; c < this.levelData.getColumnCount(); c++) {
+                if (this.levelData.getString(r, c) === 'r') {
+                    rocks.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockGrey.image, false, "rock"));
+                }
+            }
+        }
+        return rocks;
+    }
+
+    loadStartPosition() {
         let startPosition = {};
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
@@ -29,29 +78,29 @@ class LevelManager {
                 }
             }
         }
-        if(debug){
+        if (debug) {
             console.log("Start Position: ", startPosition);
         }
         return startPosition.x ? startPosition : { x: 0, y: 0 };
     }
 
-    getGoalPosition() {
+    loadGoalPosition() {
         let goalPosition = {};
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'g') {
-                    goalPosition = { x: c * this.blockSize , y: r * this.blockSize };
+                    goalPosition = { x: c * this.blockSize, y: r * this.blockSize };
                     break;
                 }
             }
         }
-        if(debug){
+        if (debug) {
             console.log("Goal Position: ", goalPosition);
         }
         return goalPosition.x ? goalPosition : { x: 0, y: 0 };
     }
 
-    getSpikes() {
+    loadSpikes() {
         let spikes = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
@@ -63,7 +112,7 @@ class LevelManager {
         return spikes;
     }
 
-    getFriendlySpikes() {
+    loadFriendlySpikes() {
         let friendlySpikes = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
@@ -81,6 +130,12 @@ class LevelManager {
 
     loadLevelData(levelData) {
         this.levelData = levelData;
+        this.platforms = this.loadPlatforms();
+        this.rocks = this.loadRocks();
+        this.spikes = this.loadSpikes();
+        this.friendlySpikes = this.loadFriendlySpikes();
+        this.startPosition = this.loadStartPosition();
+        this.goalPosition = this.loadGoalPosition();
     }
 
     loadLevelConfig(levelConfig) {
@@ -126,8 +181,6 @@ class LevelManager {
     updateTime(elapsedSeconds) {
         this.levelInfoElements[2].html(`Time:  ${this.levelConfig.time - elapsedSeconds}`);
     }
-
-    
 
     removeLevelInfo() {
         for (let i = 0; i < this.levelInfoElements.length; i++) {
