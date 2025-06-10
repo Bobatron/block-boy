@@ -1,5 +1,5 @@
 class BlockManager {
-    constructor(collisionChecker) {
+    constructor(collisionManager) {
         this.blockConfig = {};
         this.canvasWidth;
         this.canvasHeight;
@@ -9,12 +9,19 @@ class BlockManager {
         this.drawMode = false;
         this.blockConfigElements = [];
         this.limitedBlocks = false;
-        this.collisionChecker = collisionChecker;
+        this.collisionChecker = collisionManager;
         this.locked = false;
     }
 
+    unlock(){
+        this.locked = false;
+    }
+
+    lock(){
+        this.locked = true;
+    }
+
     load(gridSize, maxBlocks, blockStock, canvasWidth, canvasHeight) {
-        this.collisionChecker = collisionChecker;
         this.blockConfig = {
             maxBlocks: maxBlocks,
             blockStock: blockStock,

@@ -1,4 +1,4 @@
-class Sprite {
+class SpriteManager {
 
     constructor({spriteSheet, spriteWidth, spriteHeight, xFrames, yFrames, animationSpeed, loop, startFrame}) {
         this.spriteSheet = spriteSheet;

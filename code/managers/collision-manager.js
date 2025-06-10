@@ -1,4 +1,4 @@
-class CollisionChecker {
+class CollisionManager {
     constructor(canvasWidth, canvasHeight, blockSize) {
         this.collisionCheckGrid = [];
         this.canvasHeight = canvasHeight;

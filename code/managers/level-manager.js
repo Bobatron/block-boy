@@ -32,6 +32,12 @@ class LevelManager {
         }
     }
 
+    removeRock(rock) {
+        const rockIndex = this.rocks.indexOf(rock);
+        this.rocks.splice(rockIndex, 1);
+        assets.sounds.breakRock.play();
+    }
+
     drawSpikes() {
         for (let spike of this.spikes) {
             spike.draw();
@@ -61,7 +67,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'r') {
-                    rocks.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockGrey.image, false, "rock"));
+                    rocks.push(new Rock(c * this.blockSize, r * this.blockSize, this.blockSize));
                 }
             }
         }
@@ -105,7 +111,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'x') {
-                    spikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockSpike.image, true, "spike"));
+                    spikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, 'spike'));
                 }
             }
         }
@@ -117,7 +123,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === 'f') {
-                    friendlySpikes.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockFriendlySpike.image, true, "friendly-spike"));
+                    friendlySpikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, 'friendly-spike'));
                 }
             }
         }

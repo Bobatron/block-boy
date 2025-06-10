@@ -10,10 +10,10 @@
 - [X] Add timer to levels
 - [X] Add scoring to levels
 - [X] Add lives
-- [ ] Better win/lose screens with scores
+- [X] Better win/lose screens with scores
 - [X] Create block boy logo for socials
-- [ ] Create social account / web presence
-- [Xe] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
+- [X] Create social account / web presence
+- [X] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
 - [ ] QR Code level
 - [ ] Level config allow to configure the block size, x/y block count - jump/movement needs to factor in block size
 

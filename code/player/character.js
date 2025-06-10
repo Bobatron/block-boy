@@ -44,7 +44,7 @@ class Character {
         this.direction = "STOP";
 
         // Sprite data for character
-        this.blockBoyLeft = new Sprite({
+        this.blockBoyLeft = new SpriteManager({
             spriteSheet: window.assets.images.blockBoyLeft.image,
             spriteWidth: 400,
             spriteHeight: 456,
@@ -54,7 +54,7 @@ class Character {
             loop: true,
             startFrame: 1
         });
-        this.blockBoyRight = new Sprite({
+        this.blockBoyRight = new SpriteManager({
             spriteSheet: window.assets.images.blockBoyRight.image,
             spriteWidth: 400,
             spriteHeight: 456,
@@ -64,7 +64,7 @@ class Character {
             loop: true,
             startFrame: 1
         });
-        this.blockBoyStopLeft = new Sprite({
+        this.blockBoyStopLeft = new SpriteManager({
             spriteSheet: window.assets.images.blockBoyLeft.image,
             spriteWidth: 400,
             spriteHeight: 460,
@@ -74,7 +74,7 @@ class Character {
             loop: true,
             startFrame: 0
         });
-        this.blockBoyStopRight = new Sprite({
+        this.blockBoyStopRight = new SpriteManager({
             spriteSheet: window.assets.images.blockBoyRight.image,
             spriteWidth: 400,
             spriteHeight: 460,
