@@ -66,6 +66,9 @@ function preload() {
     assets.images.hiddenYarn = {};
     assets.images.hiddenYarn.source = "assets/images/hidden-yarn.png";
     assets.images.hiddenYarn.image = loadImage(assets.images.hiddenYarn.source);
+    assets.images.qrCode = {};
+    assets.images.qrCode.source = "assets/images/qr-code.jpg";
+    assets.images.qrCode.image = loadImage(assets.images.qrCode.source);
     assets.images.bg1 = {};
     assets.images.bg1.source = "assets/images/background-1.png";
     assets.images.bg1.image = loadImage(assets.images.bg1.source);
@@ -74,8 +77,8 @@ function preload() {
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
     assets.sounds.breakRock = loadSound("assets/sounds/break-rock.wav");
     assets.sounds.selectClick = loadSound("assets/sounds/select-click.wav");
-    assets.sounds.yay = loadSound("assets/sounds/yay.mp3");
-    assets.sounds.win = loadSound("assets/sounds/win.mp3");
+    assets.sounds.yay = loadSound("assets/sounds/yay.wav");
+    assets.sounds.win = loadSound("assets/sounds/win.wav");
     assets.sounds.lose = loadSound("assets/sounds/lose.mp3");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 
@@ -86,12 +89,12 @@ function preload() {
 }
 
 // Configuration
-let canvasWidth = 1250;
-let canvasHeight = 650;
+let canvasWidth = 1500;
+let canvasHeight = 780;
 var grid;
 var maxBlocks = 5;
 var blockStock = 5;
-var blockSize = 50;
+var blockSize = 60;
 var blockManager;
 var collisionManager;
 var gameState;
@@ -117,7 +120,11 @@ function setup() {
     levelManager = new LevelManager(blockSize, character);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
     goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal.image, false, LevelObjectType.Goal);
-    mouseIcon = new MouseIcon(30);
+    mouseIcon = new MouseIcon((blockSize/5)*3);
+    // Add QR Code
+    let qrImageElement = createImg(assets.images.qrCode.source);
+    qrImageElement.position(canvasWidth + 50, 10);
+    qrImageElement.size(250, 250);
 }
 
 function keyPressed() {
