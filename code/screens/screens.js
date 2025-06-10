@@ -38,6 +38,38 @@ function drawMenuScreen() {
     text('Press enter to begin', width / 2, 420);
 }
 
+function drawLoseLifeScreen() {
+    background(0);
+    let r = sin(frameCount * 0.05) * 127 + 128; 
+    let g = cos(frameCount * 0.03) * 127 + 128;
+    let b = sin(frameCount * 0.07) * 127 + 128;
+
+    stroke(r, g, b);
+    noFill();
+    strokeWeight(r); // added this for the sillies but it seems kinda cool
+    rect(100, 100, width - 200, height - 200);
+
+    noStroke();
+    fill(255, 0, 0);
+    textSize(50);
+    textAlign(CENTER);
+    textFont('Impact');
+    text('BLOCK BOY', width / 2, 150);
+    textSize(30);
+    text(`SCORE: ${score}`, width / 2, 180);
+    
+    textSize(50);
+    fill(0, 255, 0);
+    text('YOU DIED 💀', width / 2, 295);
+    textSize(20);
+    let loserMessage = "Is now a good time to mention that Goldiblocks can't swim?";
+    fill(255, 0, 0);
+    text(loserMessage, width / 2, 345);
+    fill(255, 255, 255);
+    textSize(30);
+    text('Press enter to try again...', width / 2, 380);
+}
+
 function drawGameOverScreen() {
     background(0);
     let r = sin(frameCount * 0.05) * 127 + 128; 
@@ -56,11 +88,7 @@ function drawGameOverScreen() {
     textFont('Impact');
     text('BLOCK BOY', width / 2, 150);
     textSize(30);
-    if(finalScore > 0){
-        text(`SCORE: ${finalScore}`, width / 2, 180);
-    } else {
-        text('MADE BY ROCKET BROS.', width / 2, 180);
-    }
+    text(`SCORE: ${finalScore}`, width / 2, 180);
     
     textSize(50);
     fill(0, 255, 0);
@@ -92,7 +120,7 @@ function drawWinLevelScreen() {
     textFont('Impact');
     text('BLOCK BOY', width / 2, 150);
     textSize(30);
-    text('MADE BY ROCKET BROS.', width / 2, 180);
+    text(`SCORE: ${score}`, width / 2, 180);
     textSize(50);
     fill(0, 255, 0);
     text('WINNER WINNER CHICKEN DINNER 🐔', width / 2, 295);
@@ -123,7 +151,7 @@ function drawWinGameScreen() {
     textFont('Impact');
     text('BLOCK BOY', width / 2, 150);
     textSize(30);
-    text('MADE BY ROCKET BROS.', width / 2, 180);
+    text(`SCORE: ${finalScore}`, width / 2, 180);
     textSize(50);
     fill(0, 255, 0);
     text('CONGRATULATIONS - YOU BEAT THE GAME 🥇', width / 2, 295);

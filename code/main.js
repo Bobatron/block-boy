@@ -78,7 +78,7 @@ var maxBlocks = 5;
 var blockStock = 5;
 var blockSize = 50;
 var blockManager;
-var collisionChecker;
+var collisionManager;
 var gameState;
 var levelManager;
 var currentLevel = 0;
@@ -96,9 +96,9 @@ function setup() {
     createCanvas(canvasWidth, canvasHeight);
     background(51);
     gameState = 'menu';
-    collisionChecker = new CollisionChecker(canvasWidth, canvasHeight, blockSize);
+    collisionManager = new CollisionManager(canvasWidth, canvasHeight, blockSize);
     character = new Character(0, 0, blockSize, startingLives);
-    blockManager = new BlockManager(collisionChecker);
+    blockManager = new BlockManager(collisionManager);
     levelManager = new LevelManager(blockSize, character);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
     goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal.image, false, "goal");
@@ -137,7 +137,7 @@ function keyPressed() {
     if (keyCode === ENTER && gameState === 'gameover') {
         gameState = 'menu';
     }
-    if (keyCode === ENTER && gameState === 'winlevel') {
+    if (keyCode === ENTER && (gameState === 'winlevel' || gameState === 'loseLife')) {
         gameState = 'gameplay';
         stroke(0);
         fill(255);
@@ -150,6 +150,10 @@ function keyPressed() {
     }
     if (keyCode === ENTER && gameState === 'wingame') {
         gameState = 'menu';
+        character.lives = startingLives;
+        finalScore = 0;
+        currentLevel = 0;
+        score = 0;
     }
 }
 
@@ -158,36 +162,36 @@ function loadLevel() {
     character.blockBoyNormal();
     window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.bgMusic.loop();
-    collisionChecker.initializeCollisionCheckGrid();
+    collisionManager.initializeCollisionCheckGrid();
     levelManager.loadLevelData(assets.levels.data[currentLevel]);
     levelManager.loadLevelConfig(assets.levels.config[currentLevel]);
 
     for (let i = 0; i < levelManager.platforms.length; i++) {
-        collisionChecker.addObjectToCollisionCheckGrid(levelManager.platforms[i]);
+        collisionManager.addObjectToCollisionCheckGrid(levelManager.platforms[i]);
     }
 
     for (let i = 0; i < levelManager.rocks.length; i++) {
-        collisionChecker.addObjectToCollisionCheckGrid(levelManager.rocks[i]);
+        collisionManager.addObjectToCollisionCheckGrid(levelManager.rocks[i]);
     }
 
     for (let i = 0; i < levelManager.spikes.length; i++) {
-        collisionChecker.addObjectToCollisionCheckGrid(levelManager.spikes[i]);
+        collisionManager.addObjectToCollisionCheckGrid(levelManager.spikes[i]);
     }
 
     for (let i = 0; i < levelManager.friendlySpikes.length; i++) {
-        collisionChecker.addObjectToCollisionCheckGrid(levelManager.friendlySpikes[i]);
+        collisionManager.addObjectToCollisionCheckGrid(levelManager.friendlySpikes[i]);
     }
 
     character.reset(levelManager.startPosition.x, levelManager.startPosition.y);
     goal.reset(levelManager.goalPosition.x, levelManager.goalPosition.y);
 
-    collisionChecker.addObjectToCollisionCheckGrid(goal);
+    collisionManager.addObjectToCollisionCheckGrid(goal);
 
     maxBlocks = levelManager.getLevelConfig().maxBlocks;
     blockStock = levelManager.getLevelConfig().blockStock;
     blockManager.load(blockSize, maxBlocks, blockStock, canvasWidth, canvasHeight);
     if (collisionDebug) {
-        console.log("Collision grid: ", collisionChecker.collisionCheckGrid);
+        console.log("Collision grid: ", collisionManager.collisionCheckGrid);
     }
 
     levelManager.drawLevelInfo(score);
@@ -203,7 +207,7 @@ function winLevel() {
     currentLevel += 1;
     if (currentLevel >= assets.levels.data.length) {
         gameState = 'wingame';
-        currentLevel = 0;
+        finalScore = score;
     }
 }
 
@@ -223,9 +227,11 @@ function loseLife() {
     levelManager.removeLevelInfo();
     window.assets.sounds.bgMusic.stop();
     character.lives--;
-    gameState = 'gameover';
     if (character.lives <= 0) {
+        gameState = 'gameover';
         finalScore = score;
+    } else {
+        gameState = 'loseLife';
     }
 }
 
@@ -239,6 +245,9 @@ function draw() {
             break;
         case 'gameover':
             drawGameOverScreen();
+            break;
+        case 'loseLife':
+            drawLoseLifeScreen();
             break;
         case 'winlevel':
             drawWinLevelScreen();
@@ -287,10 +296,10 @@ function gameplay() {
 
     for (let x = startX; x <= endX; x++) {
         for (let y = startY; y <= endY; y++) {
-            if (collisionChecker.collisionCheckGrid[x] && collisionChecker.collisionCheckGrid[x][y]) {
-                for (let index = 0; index < collisionChecker.collisionCheckGrid[x][y].length; index++) {
-                    let objects = collisionChecker.collisionCheckGrid[x][y];
-                    let object = collisionChecker.collisionCheckGrid[x][y][index];
+            if (collisionManager.collisionCheckGrid[x] && collisionManager.collisionCheckGrid[x][y]) {
+                for (let index = 0; index < collisionManager.collisionCheckGrid[x][y].length; index++) {
+                    let objects = collisionManager.collisionCheckGrid[x][y];
+                    let object = collisionManager.collisionCheckGrid[x][y][index];
                     // Character wont be in this grid currently but should be in the future
                     // For example when there are other moving objects that may collide with the character
                     if (object !== character) {
@@ -304,13 +313,13 @@ function gameplay() {
                                 checkCharacterCollisionUp(character, object);
                                 break;
                             case "spike":
-                                if (checkCharacterCollisionRect(character, object)) {
+                                if (checkCharacterCollisionRect(character, object.getSpikeCollisionBox())) {
                                     loseLife();
                                     return;
                                 }
                                 break;
                             case "friendly-spike":
-                                if (!objects.some(obj => obj.type === "block") && checkCharacterCollisionRect(character, object)) {
+                                if (!objects.some(obj => obj.type === "block") && checkCharacterCollisionRect(character, object.getSpikeCollisionBox())) {
                                     loseLife();
                                     return;
                                 }
@@ -349,8 +358,8 @@ function gameplay() {
     let mouseGridX = Math.floor(mouse.x / blockSize);
     let mouseGridY = Math.floor(mouse.y / blockSize);
     if (mouseIsPressed) {
-        if (collisionChecker.collisionCheckGrid[mouseGridX] && collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY] && collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY][0]) {
-            let object = collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY][0];
+        if (collisionManager.collisionCheckGrid[mouseGridX] && collisionManager.collisionCheckGrid[mouseGridX][mouseGridY] && collisionManager.collisionCheckGrid[mouseGridX][mouseGridY][0]) {
+            let object = collisionManager.collisionCheckGrid[mouseGridX][mouseGridY][0];
             switch (object.type) {
                 case "platform":
                 case "spike":
@@ -364,14 +373,11 @@ function gameplay() {
                     blockManager.addRemoveBlocks();
                     break;
                 case "rock":
-                    // Just for the purposes of checking if block boy is in neighbouring tiles
-                    const rockCollisionArea = new LevelObject(object.x - object.blockSize, object.y - object.blockSize, object.blockSize * 3, null, null, null);
-                    if (checkCharacterCollisionRect(character, rockCollisionArea)) {
-                        const rockIndex = levelManager.rocks.indexOf(object);
-                        levelManager.rocks.splice(rockIndex, 1);
-                        collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY].splice(collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY].indexOf(object), 1);
-                        assets.sounds.breakRock.play();
-                        blockManager.locked = true;
+                    // Checking if block boy is in neighbouring tiles
+                    if (checkCharacterCollisionRect(character, object.getRockCollisionBox())) {
+                        levelManager.removeRock(object);
+                        collisionManager.removeObjectFromCollisionCheckGrid(object);
+                        blockManager.lock();
                     }
 
             }
@@ -382,15 +388,9 @@ function gameplay() {
     character.draw();
 
     // Mouse icon (cursor drawing logic)
-    if (collisionChecker.collisionCheckGrid[mouseGridX] && collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY] && collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY][0]) {
-        let object = collisionChecker.collisionCheckGrid[mouseGridX][mouseGridY][0];
-         // Just for the purposes of checking if block boy is in neighbouring tiles
-         const rockCollisionArea = new LevelObject(object.x - object.blockSize, object.y - object.blockSize, object.blockSize * 3, null, null, null);
-        if (object.type === 'rock' && checkCharacterCollisionRect(character, rockCollisionArea)) {
-            mouseIcon.drawHammer();
-        } else {
-            mouseIcon.drawPencil();
-        }
+    if (collisionManager.collisionCheckGrid[mouseGridX]?.[mouseGridY]?.[0]?.type === 'rock') {
+        let rock = collisionManager.collisionCheckGrid[mouseGridX][mouseGridY][0];
+        checkCharacterCollisionRect(character, rock.getRockCollisionBox()) ? mouseIcon.drawHammer() : mouseIcon.drawPencil();
     } else {
         mouseIcon.drawPencil();
     }
@@ -399,13 +399,20 @@ function gameplay() {
     if (collisionDebug) {
         console.log(collisionCheckCount);
         collisionCheckCount = 0;
+        for(const spike of levelManager.spikes){
+            spike.drawSpikeCollisionBox();
+        }
+        for(const friendlySpike of levelManager.friendlySpikes){
+            friendlySpike.drawSpikeCollisionBox();
+        }
+        for(const rock of levelManager.rocks){
+            rock.drawRockCollisionBox();
+        }
     }
 }
 
 function mouseReleased() {
     blockManager?.setMouseClicked(false);
-    blockManager.locked = false;
+    blockManager?.unlock();
     levelEditor?.setMouseClicked(false);
 }
-
-

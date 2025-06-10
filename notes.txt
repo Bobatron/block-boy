@@ -71,3 +71,36 @@ OTHER
 
 After next push - update the project to typescript if easy
 and refactor code to make it use typescript features
+
+
+
+I think the collision square around breakable rocks should be made smaller to ensure block boy is fully in the surroudning tiles before it can be broke
+I think make the collison block width 2 blocks instead of 3 (test it)
+DONE
+
+for some reason the score is staying after completing the game
+FIXED
+
+I have broken the start of game with the main mouse released function
+FIXED
+
+Spiral level needs more time
+DONE
+
+As does the original last level
+DONE
+
+make the spike death box smaller and more fair
+DONE (can be tweaked further now if needed)
+
+Need to make more levels
+Don't worry about repeating ideas - players wont be thinking this if the levels are short and quick
+Use the nintendo method - introduce a concept and then expand
+1. first wave of levels should just explore the draw/remove block features
+2. Second wave of levels should just explore the the spikes
+3. Third wave of levels should explore the friendly spikes
+4. Fourth wave of levels should explore the rock breaking feature
+5. The last wave of levels should mix all components and be the most challenging levels
+
+Is there a missing mechanic that will open the game possibilities up more?
+power up? Type of enemy? Moving spikes?
