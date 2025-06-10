@@ -1,10 +1,10 @@
 class Rock extends LevelObject {
     constructor(x, y, blockSize) {
-        super(x, y, blockSize, assets.images.blockGrey.image, false, "rock");
+        super(x, y, blockSize, assets.images.blockGrey.image, false, LevelObjectType.Rock);
     }
 
     getRockCollisionBox() {
-        return { x: this.x - (this.blockSize / 2), y: this.y - (this.blockSize / 2), blockSize: this.blockSize * 2, type: 'rock-collision-area' }
+        return { x: this.x - (this.blockSize / 2), y: this.y - (this.blockSize / 2), blockSize: this.blockSize * 2, type: CollisionType.RockBreakZone }
     }
 
     drawRockCollisionBox() {

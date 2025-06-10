@@ -8,28 +8,35 @@ class LevelObject {
         this.type = type; // 'spike', 'platform', etc.
         this.symbol;
         switch (this.type) {
-            case 'spike':
-                this.symbol = 'x';
+            case LevelObjectType.Spike:
+                this.symbol = LevelObjectSymbol.Spike;
                 break;
-            case 'platform':
-                this.symbol = 'p';
+            case LevelObjectType.Platform:
+                this.symbol = LevelObjectSymbol.Platform;
                 break;
-            case 'rock':
-                this.symbol = 'r';
+            case LevelObjectType.Rock:
+                this.symbol = LevelObjectSymbol.Rock;
                 break;
-            case 'friendly-spike':
-                this.symbol = 'f';
+            case LevelObjectType.FriendlySpike:
+                this.symbol = LevelObjectSymbol.FriendlySpike;
                 break;
-            case 'start':
-                this.symbol = 's';
+            case LevelObjectType.Start:
+                this.symbol = LevelObjectSymbol.Start;
                 break;
-            case 'goal':
-                this.symbol = 'g';
+            case LevelObjectType.Goal:
+                this.symbol = LevelObjectSymbol.Goal;
                 break;
-            case 'block':
-                this.symbol = 'b';
+            case LevelObjectType.Block:
+                this.symbol = LevelObjectSymbol.Block;
+                break;
+            case LevelObjectType.Yarn:
+                this.symbol = LevelObjectSymbol.Yarn;
+                break;
+            case LevelObjectType.HiddenYarn:
+                this.symbol = LevelObjectSymbol.HiddenYarn;
                 break;
             default:
+                console.warn(`Unknown type ${type} provided`);
                 this.symbol = '-';
         }
     }

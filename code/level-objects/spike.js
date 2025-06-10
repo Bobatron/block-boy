@@ -1,16 +1,20 @@
 class Spike extends LevelObject {
     constructor(x, y, blockSize, type) {
-        if (type === 'friendly-spike') {
-            super(x, y, blockSize, assets.images.blockFriendlySpike.image, true, "friendly-spike");
-        } else if (type === 'spike') {
-            super(x, y, blockSize, assets.images.blockSpike.image, true, 'spike');
-        } else {
-            throw error(`Unknown spike type provided: ${type}`)
+        switch (type) {
+            case LevelObjectType.FriendlySpike:
+                super(x, y, blockSize, assets.images.blockFriendlySpike.image, true, LevelObjectType.FriendlySpike);
+                break;
+            case LevelObjectType.Spike:
+                super(x, y, blockSize, assets.images.blockSpike.image, true, LevelObjectType.Spike);
+                break;
+            default:
+                throw error(`Unknown spike type provided: ${type}`)
+
         }
     }
 
     getSpikeCollisionBox() {
-        return { x: this.x + (this.blockSize / 4), y: this.y + (this.blockSize / 4), blockSize: this.blockSize / 2, type: 'spike-collision-area' }
+        return { x: this.x + (this.blockSize / 4), y: this.y + (this.blockSize / 4), blockSize: this.blockSize / 2, type: CollisionType.Spike }
     }
 
     drawSpikeCollisionBox() {

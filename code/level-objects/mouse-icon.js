@@ -3,8 +3,8 @@ class MouseIcon {
         // disable the cursor in the browser
         noCursor();
         this.size = size;
-        this.pencilCursor = window.assets.images.pencilCursor.image;
-        this.hammerCursor = window.assets.images.hammerCursor.image;
+        this.pencilCursor = assets.images.pencilCursor.image;
+        this.hammerCursor = assets.images.hammerCursor.image;
     }
 
     drawPencil(){

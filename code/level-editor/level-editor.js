@@ -5,33 +5,43 @@ class LevelEditor {
         this.drawObject = {
             platform: {
                 asset: window.assets.images.blockYellow,
-                type: 'platform',
-                symbol: 'p'
+                type: LevelObjectType.Platform,
+                symbol: LevelObjectSymbol.Platform
             },
             rock: {
                 asset: window.assets.images.blockGrey,
-                type: 'rock',
-                symbol: 'r'
+                type: LevelObjectType.Rock,
+                symbol: LevelObjectSymbol.Rock
+            },
+            yarn: {
+                asset: window.assets.images.yarn,
+                type: LevelObjectType.Yarn,
+                symbol: LevelObjectSymbol.Yarn
+            },
+            hiddenYarn: {
+                asset: window.assets.images.hiddenYarn,
+                type: LevelObjectType.HiddenYarn,
+                symbol: LevelObjectSymbol.HiddenYarn
             },
             spike: {
                 asset: window.assets.images.blockSpike,
-                type: 'spike',
-                symbol: 'x'
+                type: LevelObjectType.Spike,
+                symbol: LevelObjectSymbol.Spike
             },
             friendlySpike: {
                 asset: window.assets.images.blockFriendlySpike,
-                type: 'friendly-spike',
-                symbol: 'f'
+                type: LevelObjectType.FriendlySpike,
+                symbol: LevelObjectSymbol.FriendlySpike
             },
             start: {
                 asset: window.assets.images.blockBoy,
-                type: 'start',
-                symbol: 's'
+                type: LevelObjectType.Start,
+                symbol: LevelObjectSymbol.Start
             },
             goal: {
                 asset: window.assets.images.goal,
-                type: 'goal',
-                symbol: 'g'
+                type: LevelObjectType.Goal,
+                symbol: LevelObjectSymbol.Goal
             }
         };
 
