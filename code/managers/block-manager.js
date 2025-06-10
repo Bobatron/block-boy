@@ -13,11 +13,11 @@ class BlockManager {
         this.locked = false;
     }
 
-    unlock(){
+    unlock() {
         this.locked = false;
     }
 
-    lock(){
+    lock() {
         this.locked = true;
     }
 
@@ -56,6 +56,9 @@ class BlockManager {
     addBlock(x, y) {
         this.blocks.push(new Block(x, y, this.gridSize));
         this.collisionChecker.addObjectToCollisionCheckGrid(this.blocks[this.blocks.length - 1]);
+        if (window.assets.sounds.popCreate.isPlaying()) {
+            window.assets.sounds.popCreate.stop();
+        }
         window.assets.sounds.popCreate.play();
     }
 
@@ -73,14 +76,17 @@ class BlockManager {
         var startArray = this.blocks.slice(0, index);
         var endArray = this.blocks.slice(index + 1, this.blocks.length);
         var returnArray = startArray.concat(endArray);
-        assets.sounds.popRemove.play();
+        if (window.assets.sounds.popRemove.isPlaying()) {
+            window.assets.sounds.popRemove.stop();
+        }
+        window.assets.sounds.popRemove.play();
         return returnArray;
     }
 
     addRemoveBlocks() {
-        if(this.locked)
+        if (this.locked)
             return;
-        
+
         var mouseGridPosX = mouseX - (mouseX % this.gridSize);
         var mouseGridPosY = mouseY - (mouseY % this.gridSize);
         if (mouseGridPosX > this.canvasWidth - this.gridSize || mouseGridPosY > this.canvasHeight - this.gridSize) {
