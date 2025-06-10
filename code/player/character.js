@@ -123,6 +123,13 @@ class Character {
         this.blockBoyStopRight.updateSprintImage(window.assets.images.blockBoyRightPanic.image);
     }
 
+    blockBoyHappy() {
+        this.blockBoyLeft.updateSprintImage(window.assets.images.blockBoyLeftHappy.image);
+        this.blockBoyStopLeft.updateSprintImage(window.assets.images.blockBoyLeftHappy.image);
+        this.blockBoyRight.updateSprintImage(window.assets.images.blockBoyRightHappy.image);
+        this.blockBoyStopRight.updateSprintImage(window.assets.images.blockBoyRightHappy.image);
+    }
+
     blockBoyNormal() {
         this.blockBoyLeft.updateSprintImage(window.assets.images.blockBoyLeft.image);
         this.blockBoyStopLeft.updateSprintImage(window.assets.images.blockBoyLeft.image);

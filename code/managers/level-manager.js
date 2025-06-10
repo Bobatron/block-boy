@@ -9,15 +9,30 @@ class LevelManager {
         this.rocks = [];
         this.spikes = [];
         this.friendlySpikes = [];
+        this.yarns = [];
         this.startPosition = { x: 0, y: 0 };
         this.goalPosition = { x: 0, y: 0 };
     }
 
     draw() {
+        // Draw yarns before rocks, so they can be hidden behind them in some levels
+        this.drawYarns();
         this.drawPlatforms();
         this.drawRocks();
         this.drawSpikes();
         this.drawFriendlySpikes();
+    }
+
+    drawYarns() {
+        for (let yarn of this.yarns) {
+            yarn.draw();
+        }
+    }
+
+    removeYarn(yarn) {
+        const yarnIndex = this.yarns.indexOf(yarn);
+        this.yarns.splice(yarnIndex, 1);
+        assets.sounds.yay.play();
     }
 
     drawPlatforms() {
@@ -54,19 +69,33 @@ class LevelManager {
         let platforms = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 'p') {
-                    platforms.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, window.assets.images.blockYellow.image, false, "platform"));
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Platform) {
+                    platforms.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, assets.images.blockYellow.image, false, LevelObjectType.Platform));
                 }
             }
         }
         return platforms;
     }
 
+    
+
+    loadYarns() {
+        let yarns = [];
+        for (let r = 0; r < this.levelData.getRowCount(); r++) {
+            for (let c = 0; c < this.levelData.getColumnCount(); c++) {
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Yarn || this.levelData.getString(r, c) === LevelObjectSymbol.HiddenYarn) {
+                    yarns.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, assets.images.yarn.image, false, LevelObjectType.Yarn));
+                }
+            }
+        }
+        return yarns;
+    }
+
     loadRocks() {
         let rocks = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 'r') {
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Rock || this.levelData.getString(r, c) === LevelObjectSymbol.HiddenYarn) {
                     rocks.push(new Rock(c * this.blockSize, r * this.blockSize, this.blockSize));
                 }
             }
@@ -78,7 +107,7 @@ class LevelManager {
         let startPosition = {};
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 's') {
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Start) {
                     startPosition = { x: c * this.blockSize, y: r * this.blockSize };
                     break;
                 }
@@ -94,7 +123,7 @@ class LevelManager {
         let goalPosition = {};
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 'g') {
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Goal) {
                     goalPosition = { x: c * this.blockSize, y: r * this.blockSize };
                     break;
                 }
@@ -110,8 +139,8 @@ class LevelManager {
         let spikes = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 'x') {
-                    spikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, 'spike'));
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.Spike) {
+                    spikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, LevelObjectType.Spike));
                 }
             }
         }
@@ -122,8 +151,8 @@ class LevelManager {
         let friendlySpikes = [];
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
-                if (this.levelData.getString(r, c) === 'f') {
-                    friendlySpikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, 'friendly-spike'));
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.FriendlySpike) {
+                    friendlySpikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, LevelObjectType.FriendlySpike));
                 }
             }
         }
@@ -139,6 +168,7 @@ class LevelManager {
         this.platforms = this.loadPlatforms();
         this.rocks = this.loadRocks();
         this.spikes = this.loadSpikes();
+        this.yarns = this.loadYarns();
         this.friendlySpikes = this.loadFriendlySpikes();
         this.startPosition = this.loadStartPosition();
         this.goalPosition = this.loadGoalPosition();
@@ -186,6 +216,10 @@ class LevelManager {
 
     updateTime(elapsedSeconds) {
         this.levelInfoElements[2].html(`Time:  ${this.levelConfig.time - elapsedSeconds}`);
+    }
+
+    updateScore(currentScore) {
+        this.levelInfoElements[1].html(`Score: ${currentScore}`);
     }
 
     removeLevelInfo() {
