@@ -22,7 +22,7 @@
 - [ ] More levels (30-ish)
 - [ ] Moving spike blocks
 - [ ] Moving spike blocks - that destroy placed blocks
-- [ ] Collectible item in level (adds points)
+- [X] Collectible item in level (adds points)
 
 ## Nice to Have
 - [ ] Custom difficulty (number of lives, items, time etc...)
