@@ -120,7 +120,7 @@ function setup() {
     levelManager = new LevelManager(blockSize, character);
     grid = new Grid(canvasWidth, canvasHeight, blockSize);
     goal = new LevelObject(0, canvasHeight - blockSize * 3, blockSize, assets.images.goal.image, false, LevelObjectType.Goal);
-    mouseIcon = new MouseIcon((blockSize/5)*3);
+    mouseIcon = new MouseIcon((blockSize / 5) * 3);
     // Add QR Code
     let qrImageElement = createImg(assets.images.qrCode.source);
     qrImageElement.position(canvasWidth + 50, 10);
@@ -157,6 +157,7 @@ function keyPressed() {
         levelEditor = new LevelEditor(blockSize);
     }
     if (keyCode === ENTER && gameState === 'gameover') {
+        window.assets.sounds.bgMusic.stop();
         gameState = 'menu';
     }
     if (keyCode === ENTER && (gameState === 'winlevel' || gameState === 'loseLife')) {
@@ -171,6 +172,7 @@ function keyPressed() {
         loadLevel();
     }
     if (keyCode === ENTER && gameState === 'wingame') {
+        window.assets.sounds.bgMusic.stop();
         gameState = 'menu';
         character.lives = startingLives;
         finalScore = 0;
@@ -184,8 +186,9 @@ function loadLevel() {
     character.blockBoyNormal();
     window.assets.sounds.lose.stop();
     window.assets.sounds.win.stop();
-    window.assets.sounds.bgMusic.rate(1);
-    window.assets.sounds.bgMusic.loop();
+    if (!window.assets.sounds.bgMusic.isPlaying()) {
+        window.assets.sounds.bgMusic.loop();
+    }
     collisionManager.initializeCollisionCheckGrid();
     levelManager.loadLevelData(assets.levels.data[currentLevel]);
     levelManager.loadLevelConfig(assets.levels.config[currentLevel]);
@@ -231,12 +234,14 @@ function winLevel() {
     blockManager.removeblockConfig();
     levelManager.removeLevelInfo();
     gameState = 'winlevel';
-    window.assets.sounds.bgMusic.stop();
+    window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.win.play();
     currentLevel += 1;
     if (currentLevel >= assets.levels.data.length) {
         gameState = 'wingame';
         finalScore = score;
+        // Temp approach until better win screens added
+        alert(`You Won! Final Score: ${finalScore}`);
     }
 }
 
@@ -254,12 +259,14 @@ function calculateScore() {
 function loseLife() {
     blockManager.removeblockConfig();
     levelManager.removeLevelInfo();
-    window.assets.sounds.bgMusic.stop();
+    window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.lose.play();
     character.lives--;
     if (character.lives <= 0) {
         gameState = 'gameover';
         finalScore = score;
+        // Temp approach until better game over screens added
+        alert(`Game Over! Final Score: ${finalScore}`);
     } else {
         gameState = 'loseLife';
     }
@@ -355,7 +362,7 @@ function gameplay() {
                                 }
                                 break;
                             case LevelObjectType.Yarn:
-                                if (checkCharacterCollisionRect(character, object)) {
+                                if (checkCharacterCollisionRect(character, object.getYarnCollisionBox())) {
                                     levelManager.removeYarn(object);
                                     collisionManager.removeObjectFromCollisionCheckGrid(object);
                                     score += 1000;
@@ -448,6 +455,9 @@ function gameplay() {
         }
         for (const rock of levelManager.rocks) {
             rock.drawRockCollisionBox();
+        }
+        for (const yarn of levelManager.yarns) {
+            yarn.drawYarnCollisionBox();
         }
     }
 }

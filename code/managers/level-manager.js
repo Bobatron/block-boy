@@ -84,7 +84,7 @@ class LevelManager {
         for (let r = 0; r < this.levelData.getRowCount(); r++) {
             for (let c = 0; c < this.levelData.getColumnCount(); c++) {
                 if (this.levelData.getString(r, c) === LevelObjectSymbol.Yarn || this.levelData.getString(r, c) === LevelObjectSymbol.HiddenYarn) {
-                    yarns.push(new LevelObject(c * this.blockSize, r * this.blockSize, this.blockSize, assets.images.yarn.image, false, LevelObjectType.Yarn));
+                    yarns.push(new Yarn(c * this.blockSize, r * this.blockSize, this.blockSize));
                 }
             }
         }

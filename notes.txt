@@ -104,3 +104,16 @@ Use the nintendo method - introduce a concept and then expand
 
 Is there a missing mechanic that will open the game possibilities up more?
 power up? Type of enemy? Moving spikes?
+
+
+
+
+Maybe just have the music playing constantly
+DONE
+
+On the level that has first friednly 
+Chage yellow block to purple spike
+DONE
+
+Needs to be more time on the gameover and win game screens to take note of your final score
+ADDED AN ALERT TO SHOW SCORE AS TEMP FIX

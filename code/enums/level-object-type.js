@@ -14,6 +14,7 @@ const LevelObjectType = {
 const CollisionType = {
     Spike: 'spike-collision-area',
     RockBreakZone: 'rock-break-zone',
+    Yarn: 'yarn-collision-area',
 };
 
 
