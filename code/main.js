@@ -2,7 +2,7 @@ var debug = false;
 var collisionDebug = false;
 var collisionCheckCount = 0;
 var assets = {};
-var totalLevels = 17;
+var totalLevels = 25;
 var startingLives = 5;
 
 function preload() {
@@ -83,8 +83,9 @@ function preload() {
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 
     for (let i = 0; i < totalLevels; i++) {
-        assets.levels.data[i] = loadTable(`assets/levels/level-${i}.csv`, "csv");
-        assets.levels.config[i] = loadJSON(`assets/levels/level-${i}.json`);
+        const levelIndex = i + 1;
+        assets.levels.data[i] = loadTable(`assets/levels/level-${levelIndex}.csv`, "csv");
+        assets.levels.config[i] = loadJSON(`assets/levels/level-${levelIndex}.json`);
     }
 }
 
