@@ -7,6 +7,9 @@ class Spike extends LevelObject {
             case LevelObjectType.Spike:
                 super(x, y, blockSize, assets.images.blockSpike.image, true, LevelObjectType.Spike);
                 break;
+            case LevelObjectType.AngrySpike:
+                super(x, y, blockSize, assets.images.blockAngrySpike.image, true, LevelObjectType.AngrySpike);
+                break;
             default:
                 throw error(`Unknown spike type provided: ${type}`)
 
@@ -23,6 +26,17 @@ class Spike extends LevelObject {
         strokeWeight(4);
         stroke(color("red"));
         rect(collisionBox.x, collisionBox.y, collisionBox.blockSize, collisionBox.blockSize);
+    }
+
+    getAngrySpikeZone() {
+        return { x: this.x - this.blockSize, y: this.y - this.blockSize, blockSize: this.blockSize * 3, type: CollisionType.AngrySpikeZone }
+    }
+
+    drawAngrySpikeZone() {
+        const zoneBox = this.getAngrySpikeZone();
+        fill(255, 0, 0, 30);
+        noStroke();
+        rect(zoneBox.x, zoneBox.y, zoneBox.blockSize, zoneBox.blockSize);
     }
 }
 

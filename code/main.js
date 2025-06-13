@@ -2,7 +2,7 @@ var debug = false;
 var collisionDebug = false;
 var collisionCheckCount = 0;
 var assets = {};
-var totalLevels = 25;
+var totalLevels = 30;
 var startingLives = 5;
 
 function preload() {
@@ -27,6 +27,9 @@ function preload() {
     assets.images.blockFriendlySpike = {};
     assets.images.blockFriendlySpike.source = "assets/images/block-friendly-spike.png";
     assets.images.blockFriendlySpike.image = loadImage(assets.images.blockFriendlySpike.source);
+    assets.images.blockAngrySpike = {};
+    assets.images.blockAngrySpike.source = "assets/images/block-angry-spike.png";
+    assets.images.blockAngrySpike.image = loadImage(assets.images.blockAngrySpike.source);
     assets.images.blockGrey = {};
     assets.images.blockGrey.source = "assets/images/block-grey.png";
     assets.images.blockGrey.image = loadImage(assets.images.blockGrey.source);
@@ -80,6 +83,7 @@ function preload() {
     assets.sounds.yay = loadSound("assets/sounds/yay.wav");
     assets.sounds.win = loadSound("assets/sounds/win.wav");
     assets.sounds.lose = loadSound("assets/sounds/lose.mp3");
+    assets.sounds.noDraw = loadSound("assets/sounds/no-draw.wav");
     assets.sounds.jump = [loadSound("assets/sounds/jump-1.wav"), loadSound("assets/sounds/jump-2.wav"), loadSound("assets/sounds/jump-3.wav")];
 
     for (let i = 0; i < totalLevels; i++) {
@@ -109,12 +113,13 @@ var score = 0;
 var finalScore = 0;
 var timeRunningOut = false;
 var mouseIcon;
+let isPaused = false;
 
 function setup() {
     select('body').style('background-color', '#000000'); // Set browser background to black
     createCanvas(canvasWidth, canvasHeight);
     background(51);
-    gameState = 'menu';
+    gameState = GameState.MainMenu;
     collisionManager = new CollisionManager(canvasWidth, canvasHeight, blockSize);
     character = new Character(0, 0, blockSize, startingLives);
     blockManager = new BlockManager(collisionManager);
@@ -129,8 +134,8 @@ function setup() {
 }
 
 function keyPressed() {
-    if (keyCode === ENTER && gameState === 'menu') {
-        gameState = 'gameplay';
+    if (keyCode === ENTER && gameState === GameState.MainMenu) {
+        gameState = GameState.GamePlay;
         if (character.lives <= 0) {
             character.lives = startingLives;
             finalScore = 0;
@@ -146,8 +151,8 @@ function keyPressed() {
         textStyle(NORMAL);
         loadLevel();
     }
-    if (keyCode === ESCAPE && gameState === 'menu') {
-        gameState = 'level-editor';
+    if (keyCode === ESCAPE && gameState === GameState.MainMenu) {
+        gameState = GameState.LevelEditor;
         stroke(0);
         fill(255);
         strokeWeight(1);
@@ -157,12 +162,12 @@ function keyPressed() {
         textStyle(NORMAL);
         levelEditor = new LevelEditor(blockSize);
     }
-    if (keyCode === ENTER && gameState === 'gameover') {
+    if (keyCode === ENTER && gameState === GameState.GameOver) {
         window.assets.sounds.bgMusic.stop();
-        gameState = 'menu';
+        gameState = GameState.MainMenu;
     }
-    if (keyCode === ENTER && (gameState === 'winlevel' || gameState === 'loseLife')) {
-        gameState = 'gameplay';
+    if (keyCode === ENTER && (gameState === GameState.LevelComplete || gameState === GameState.LoseLife)) {
+        gameState = GameState.GamePlay;
         stroke(0);
         fill(255);
         strokeWeight(1);
@@ -172,14 +177,25 @@ function keyPressed() {
         textStyle(NORMAL);
         loadLevel();
     }
-    if (keyCode === ENTER && gameState === 'wingame') {
+    if (keyCode === ENTER && gameState === GameState.GameComplete) {
         window.assets.sounds.bgMusic.stop();
-        gameState = 'menu';
+        gameState = GameState.MainMenu;
         character.lives = startingLives;
         finalScore = 0;
         currentLevel = 0;
         score = 0;
     }
+    if (keyCode === ESCAPE && gameState === GameState.GamePlay) {
+        if (isPaused) {
+            isPaused = false;
+            window.assets.sounds.bgMusic.play();
+
+        } else {
+            isPaused = true;
+            window.assets.sounds.bgMusic.pause();
+        }
+    }
+
 }
 
 function loadLevel() {
@@ -210,6 +226,10 @@ function loadLevel() {
         collisionManager.addObjectToCollisionCheckGrid(levelManager.friendlySpikes[i]);
     }
 
+    for (let i = 0; i < levelManager.angrySpikes.length; i++) {
+        collisionManager.addObjectToCollisionCheckGridIncludingSurroundingBocks(levelManager.angrySpikes[i]);
+    }
+
     for (let i = 0; i < levelManager.yarns.length; i++) {
         collisionManager.addObjectToCollisionCheckGrid(levelManager.yarns[i]);
     }
@@ -234,12 +254,12 @@ function winLevel() {
     score += calculateScore();
     blockManager.removeblockConfig();
     levelManager.removeLevelInfo();
-    gameState = 'winlevel';
+    gameState = GameState.LevelComplete;
     window.assets.sounds.bgMusic.rate(1);
     window.assets.sounds.win.play();
     currentLevel += 1;
     if (currentLevel >= assets.levels.data.length) {
-        gameState = 'wingame';
+        gameState = GameState.GameComplete;
         finalScore = score;
         // Temp approach until better win screens added
         alert(`You Won! Final Score: ${finalScore}`);
@@ -264,36 +284,36 @@ function loseLife() {
     window.assets.sounds.lose.play();
     character.lives--;
     if (character.lives <= 0) {
-        gameState = 'gameover';
+        gameState = GameState.GameOver;
         finalScore = score;
         // Temp approach until better game over screens added
         alert(`Game Over! Final Score: ${finalScore}`);
     } else {
-        gameState = 'loseLife';
+        gameState = GameState.LoseLife;
     }
 }
 
 function draw() {
     switch (gameState) {
-        case 'menu':
+        case GameState.MainMenu:
             drawMenuScreen();
             break;
-        case 'gameplay':
+        case GameState.GamePlay:
             gameplay();
             break;
-        case 'gameover':
+        case GameState.GameOver:
             drawGameOverScreen();
             break;
-        case 'loseLife':
+        case GameState.LoseLife:
             drawLoseLifeScreen();
             break;
-        case 'winlevel':
+        case GameState.LevelComplete:
             drawWinLevelScreen();
             break;
-        case 'wingame':
+        case GameState.GameComplete:
             drawWinGameScreen();
             break;
-        case 'level-editor':
+        case GameState.LevelEditor:
             drawLevelEditor();
             break;
     }
@@ -306,6 +326,12 @@ function drawLevelEditor() {
 
 
 function gameplay() {
+    if (isPaused) {
+        textSize(50);
+        textAlign(CENTER, CENTER);
+        text('PAUSED', canvasWidth / 2, canvasHeight / 2);
+        return;
+    }
     background(51);
     image(assets.images.bg1.image, 0, 0, canvasWidth, canvasHeight);
     if (debug) {
@@ -351,6 +377,7 @@ function gameplay() {
                                 checkCharacterCollisionUp(character, object);
                                 break;
                             case LevelObjectType.Spike:
+                            case LevelObjectType.AngrySpike:
                                 if (checkCharacterCollisionRect(character, object.getSpikeCollisionBox())) {
                                     loseLife();
                                     return;
@@ -403,9 +430,9 @@ function gameplay() {
     mouse.y = mouseY - (mouseY % blockSize);
     mouse.blockSize = blockSize;
     mouse.type = LevelObjectType.Cursor;
-    // Collision check loop logic for cursor
     let mouseGridX = Math.floor(mouse.x / blockSize);
     let mouseGridY = Math.floor(mouse.y / blockSize);
+    // Collision check logic for cursor
     if (mouseIsPressed) {
         if (collisionManager.collisionCheckGrid[mouseGridX] && collisionManager.collisionCheckGrid[mouseGridX][mouseGridY] && collisionManager.collisionCheckGrid[mouseGridX][mouseGridY][0]) {
             let object = collisionManager.collisionCheckGrid[mouseGridX][mouseGridY][0];
@@ -420,6 +447,19 @@ function gameplay() {
                 case LevelObjectType.Block:
                 case LevelObjectType.FriendlySpike:
                     blockManager.addRemoveBlocks();
+                    break;
+                case LevelObjectType.AngrySpike:
+                    if (checkObjectCollisionRect(object.getAngrySpikeZone(), mouse) == false) {
+                        blockManager.addRemoveBlocks();
+                    } else if (!blockManager.locked) {
+                        if (assets.sounds.noDraw.isPlaying()) {
+                            assets.sounds.noDraw.stop();
+                            assets.sounds.noDraw.play();
+                        } else {
+
+                            assets.sounds.noDraw.play();
+                        }
+                    }
                     break;
                 case LevelObjectType.Rock:
                     // Checking if block boy is in neighbouring tiles
@@ -453,6 +493,10 @@ function gameplay() {
         }
         for (const friendlySpike of levelManager.friendlySpikes) {
             friendlySpike.drawSpikeCollisionBox();
+        }
+        for (const angrySpike of levelManager.angrySpikes) {
+            angrySpike.drawSpikeCollisionBox();
+            angrySpike.drawAngrySpikeZone();
         }
         for (const rock of levelManager.rocks) {
             rock.drawRockCollisionBox();

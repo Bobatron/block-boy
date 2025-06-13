@@ -9,7 +9,7 @@ class CollisionManager {
     initializeCollisionCheckGrid() {
         // This first line resets the grid to an empty state
         this.collisionCheckGrid.length = 0;
-        
+
         const width = Math.floor(this.canvasWidth / this.blockSize);
         const height = Math.floor(this.canvasHeight / this.blockSize);
 
@@ -29,6 +29,22 @@ class CollisionManager {
 
         if (this.collisionCheckGrid[xIndex] && this.collisionCheckGrid[xIndex][yIndex] && this.collisionCheckGrid[xIndex][yIndex].indexOf(object) === -1) {
             this.collisionCheckGrid[xIndex][yIndex].push(object);
+        }
+    }
+
+    addObjectToCollisionCheckGridIncludingSurroundingBocks(object) {
+        const startXIndex = Math.floor((object.x - object.blockSize) / object.blockSize);
+        const startYIndex = Math.floor((object.y - object.blockSize) / object.blockSize);
+
+        for (let y = 0; y < 3; y++) {
+            const yIndex = startYIndex + y;
+            for (let x = 0; x < 3; x++) {
+                const xIndex = startXIndex + x;
+
+                if (this.collisionCheckGrid[xIndex] && this.collisionCheckGrid[xIndex][yIndex] && this.collisionCheckGrid[xIndex][yIndex].indexOf(object) === -1) {
+                    this.collisionCheckGrid[xIndex][yIndex].push(object);
+                }
+            }
         }
     }
 
@@ -53,7 +69,7 @@ function checkCharacterCollisionDown(character, obstacle, updateCharacterPositio
         character.collisionBox.bottomY1 + character.collisionBox.bottomHeight > obstacle.y
     )) {
         if (!obstacle.killPlayer) {
-            if(collisionDebug){
+            if (collisionDebug) {
                 console.log("HIT FLOOR!");
             }
             if (updateCharacterPosition) {
@@ -75,7 +91,7 @@ function checkCharacterCollisionUp(character, obstacle) {
     ) {
         if (!obstacle.killPlayer && !obstacle.drawBlock) {
             character.y = obstacle.y;
-            if(collisionDebug){
+            if (collisionDebug) {
                 console.log("HIT CEILING!");
             }
             character.hitCeiling(obstacle.y + obstacle.blockSize);
@@ -94,7 +110,7 @@ function checkCharacterCollisionRightSide(character, obstacle) {
         character.collisionBox.rightY1 + character.collisionBox.rightHeight > obstacle.y
     ) && (character.direction == "RIGHT" || character.direction == "STOP")) {
         if (!obstacle.killPlayer) {
-            if(collisionDebug){
+            if (collisionDebug) {
                 console.log("HIT RIGHT OF CHARACTER!");
             }
             character.rightSideCollision(obstacle.x - obstacle.blockSize);
@@ -113,7 +129,7 @@ function checkCharacterCollisionLeftSide(character, obstacle) {
         character.collisionBox.leftY1 + character.collisionBox.leftHeight > obstacle.y
     ) && (character.direction == "LEFT" || character.direction == "STOP")) {
         if (!obstacle.killPlayer) {
-            if(collisionDebug){
+            if (collisionDebug) {
                 console.log("HIT LEFT OF CHARACTER!");
             }
             character.leftSideCollision(obstacle.x + obstacle.blockSize);
@@ -131,7 +147,7 @@ function checkCharacterCollisionRect(character, object) {
         character.y < object.y + object.blockSize &&
         character.y + character.height > object.y
     )) {
-        if(collisionDebug){
+        if (collisionDebug) {
             console.log(`Collision detected between character and ${object.type}`);
         }
         return true;
@@ -147,7 +163,7 @@ function checkObjectCollisionRect(object1, object2) {
         object1.y < object2.y + object2.blockSize &&
         object1.y + object1.blockSize > object2.y
     )) {
-        if(collisionDebug){
+        if (collisionDebug) {
             console.log(`Collision detected between ${object1.type} and ${object2.type}`);
         }
         return true;

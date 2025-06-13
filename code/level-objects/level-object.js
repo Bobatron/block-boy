@@ -20,6 +20,9 @@ class LevelObject {
             case LevelObjectType.FriendlySpike:
                 this.symbol = LevelObjectSymbol.FriendlySpike;
                 break;
+            case LevelObjectType.AngrySpike:
+                this.symbol = LevelObjectSymbol.AngrySpike;
+                break;
             case LevelObjectType.Start:
                 this.symbol = LevelObjectSymbol.Start;
                 break;

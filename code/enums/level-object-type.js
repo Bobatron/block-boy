@@ -1,6 +1,7 @@
 const LevelObjectType = {
     Spike: 'spike',
     FriendlySpike: 'friendly-spike',
+    AngrySpike: 'angry-spike',
     Platform: 'platform',
     Block: 'block',
     Rock: 'rock',
@@ -13,6 +14,7 @@ const LevelObjectType = {
 
 const CollisionType = {
     Spike: 'spike-collision-area',
+    AngrySpikeZone: 'angry-spike-zone',
     RockBreakZone: 'rock-break-zone',
     Yarn: 'yarn-collision-area',
 };
@@ -21,6 +23,7 @@ const CollisionType = {
 const LevelObjectSymbol = {
     Spike: 'x',
     FriendlySpike: 'f',
+    AngrySpike: 'a',
     Platform: 'p',
     Block: 'b',
     Rock: 'r',

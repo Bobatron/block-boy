@@ -33,6 +33,11 @@ class LevelEditor {
                 type: LevelObjectType.FriendlySpike,
                 symbol: LevelObjectSymbol.FriendlySpike
             },
+            angrySpike: {
+                asset: window.assets.images.blockAngrySpike,
+                type: LevelObjectType.AngrySpike,
+                symbol: LevelObjectSymbol.AngrySpike
+            },
             start: {
                 asset: window.assets.images.blockBoy,
                 type: LevelObjectType.Start,
