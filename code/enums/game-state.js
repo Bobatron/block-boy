@@ -1,4 +1,5 @@
 const GameState = {
+    TitleScreen: 'title',
     MainMenu: 'menu',
     GamePlay: 'gameplay',
     LevelEditor: 'level-editor',

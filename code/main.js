@@ -75,6 +75,9 @@ function preload() {
     assets.images.bg1 = {};
     assets.images.bg1.source = "assets/images/background-1.png";
     assets.images.bg1.image = loadImage(assets.images.bg1.source);
+    assets.images.logo = {};
+    assets.images.logo.source = "assets/images/logo.png";
+    assets.images.logo.image = loadImage(assets.images.logo.source);
     assets.sounds.bgMusic = loadSound("assets/sounds/bg-music.mp3");
     assets.sounds.popRemove = loadSound("assets/sounds/pop-remove.wav");
     assets.sounds.popCreate = loadSound("assets/sounds/pop-create.wav");
@@ -119,7 +122,7 @@ function setup() {
     select('body').style('background-color', '#000000'); // Set browser background to black
     createCanvas(canvasWidth, canvasHeight);
     background(51);
-    gameState = GameState.MainMenu;
+    gameState = GameState.TitleScreen;
     collisionManager = new CollisionManager(canvasWidth, canvasHeight, blockSize);
     character = new Character(0, 0, blockSize, startingLives);
     blockManager = new BlockManager(collisionManager);
@@ -134,7 +137,10 @@ function setup() {
 }
 
 function keyPressed() {
-    if (keyCode === ENTER && gameState === GameState.MainMenu) {
+    if (keyCode === ENTER && gameState === GameState.TitleScreen) {
+        gameState = GameState.MainMenu;
+        assets.sounds.yay.play();
+    } else if (keyCode === ENTER && gameState === GameState.MainMenu) {
         gameState = GameState.GamePlay;
         if (character.lives <= 0) {
             character.lives = startingLives;
@@ -150,8 +156,7 @@ function keyPressed() {
         textAlign(LEFT, BASELINE);
         textStyle(NORMAL);
         loadLevel();
-    }
-    if (keyCode === ESCAPE && gameState === GameState.MainMenu) {
+    } else if (keyCode === ESCAPE && gameState === GameState.MainMenu) {
         gameState = GameState.LevelEditor;
         stroke(0);
         fill(255);
@@ -161,12 +166,10 @@ function keyPressed() {
         textAlign(LEFT, BASELINE);
         textStyle(NORMAL);
         levelEditor = new LevelEditor(blockSize);
-    }
-    if (keyCode === ENTER && gameState === GameState.GameOver) {
+    } else if (keyCode === ENTER && gameState === GameState.GameOver) {
         window.assets.sounds.bgMusic.stop();
-        gameState = GameState.MainMenu;
-    }
-    if (keyCode === ENTER && (gameState === GameState.LevelComplete || gameState === GameState.LoseLife)) {
+        gameState = GameState.TitleScreen;
+    } else if (keyCode === ENTER && (gameState === GameState.LevelComplete || gameState === GameState.LoseLife)) {
         gameState = GameState.GamePlay;
         stroke(0);
         fill(255);
@@ -176,16 +179,14 @@ function keyPressed() {
         textAlign(LEFT, BASELINE);
         textStyle(NORMAL);
         loadLevel();
-    }
-    if (keyCode === ENTER && gameState === GameState.GameComplete) {
+    } else if (keyCode === ENTER && gameState === GameState.GameComplete) {
         window.assets.sounds.bgMusic.stop();
-        gameState = GameState.MainMenu;
+        gameState = GameState.TitleScreen;
         character.lives = startingLives;
         finalScore = 0;
         currentLevel = 0;
         score = 0;
-    }
-    if (keyCode === ESCAPE && gameState === GameState.GamePlay) {
+    } else if (keyCode === ESCAPE && gameState === GameState.GamePlay) {
         if (isPaused) {
             isPaused = false;
             window.assets.sounds.bgMusic.play();
@@ -295,6 +296,9 @@ function loseLife() {
 
 function draw() {
     switch (gameState) {
+        case GameState.TitleScreen:
+            drawTitleScreen();
+            break;
         case GameState.MainMenu:
             drawMenuScreen();
             break;
