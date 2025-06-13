@@ -123,4 +123,8 @@ Levels 1 - 6 - Block drawing mechanic
 Levels 7 - 12 - Spikes
 Levels 13 - 18 - Friendly Spikes
 Levels 19 - 24 - Rocks
-Levels 25 - 30 - Everything and challenging
+Levels 25 - 30 - Angry Spikes & Everything & challenging
+
+
+IDEA: Red spikes that don't let you draw blocks around them
+ADDED

@@ -9,6 +9,7 @@ class LevelManager {
         this.rocks = [];
         this.spikes = [];
         this.friendlySpikes = [];
+        this.angrySpikes = [];
         this.yarns = [];
         this.startPosition = { x: 0, y: 0 };
         this.goalPosition = { x: 0, y: 0 };
@@ -21,6 +22,7 @@ class LevelManager {
         this.drawRocks();
         this.drawSpikes();
         this.drawFriendlySpikes();
+        this.drawAngrySpikes();
     }
 
     drawYarns() {
@@ -62,6 +64,12 @@ class LevelManager {
     drawFriendlySpikes() {
         for (let friendlySpike of this.friendlySpikes) {
             friendlySpike.draw();
+        }
+    }
+
+    drawAngrySpikes() {
+        for (let angrySpike of this.angrySpikes) {
+            angrySpike.draw();
         }
     }
 
@@ -159,6 +167,18 @@ class LevelManager {
         return friendlySpikes;
     }
 
+    loadAngrySpikes() {
+        let angrySpikes = [];
+        for (let r = 0; r < this.levelData.getRowCount(); r++) {
+            for (let c = 0; c < this.levelData.getColumnCount(); c++) {
+                if (this.levelData.getString(r, c) === LevelObjectSymbol.AngrySpike) {
+                    angrySpikes.push(new Spike(c * this.blockSize, r * this.blockSize, this.blockSize, LevelObjectType.AngrySpike));
+                }
+            }
+        }
+        return angrySpikes;
+    }
+
     getLevelConfig() {
         return this.levelConfig;
     }
@@ -170,6 +190,7 @@ class LevelManager {
         this.spikes = this.loadSpikes();
         this.yarns = this.loadYarns();
         this.friendlySpikes = this.loadFriendlySpikes();
+        this.angrySpikes = this.loadAngrySpikes();
         this.startPosition = this.loadStartPosition();
         this.goalPosition = this.loadGoalPosition();
     }

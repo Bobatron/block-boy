@@ -14,12 +14,12 @@
 - [X] Create block boy logo for socials
 - [X] Create social account / web presence
 - [X] New min jump height has broken puzzle - either increase min jump height, or change level (increase min jump height maybe better)
-- [ ] QR Code level
+- [X] QR Code level
 - [ ] Level config allow to configure the block size, x/y block count - jump/movement needs to factor in block size
 
 ## Should Have
 - [ ] Controller support
-- [ ] More levels (30-ish)
+- [X] More levels (30-ish)
 - [ ] Moving spike blocks
 - [ ] Moving spike blocks - that destroy placed blocks
 - [X] Collectible item in level (adds points)
