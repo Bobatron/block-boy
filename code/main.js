@@ -112,6 +112,7 @@ var goal;
 var levelEditor;
 var startMillis;
 var currentMillis;
+var pauseMillis;
 var score = 0;
 var finalScore = 0;
 var timeRunningOut = false;
@@ -188,10 +189,13 @@ function keyPressed() {
         score = 0;
     } else if (keyCode === ESCAPE && gameState === GameState.GamePlay) {
         if (isPaused) {
+            const pauseTime = millis() - pauseMillis;
+            startMillis += pauseTime;
             isPaused = false;
             window.assets.sounds.bgMusic.play();
 
         } else {
+            pauseMillis = millis();
             isPaused = true;
             window.assets.sounds.bgMusic.pause();
         }
