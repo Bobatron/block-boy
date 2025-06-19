@@ -257,7 +257,7 @@ class Character {
 
 
         //  MOVING AND STANDING LEFT
-        if (keyIsDown(LEFT_ARROW) && this.atRightWall == false) {
+        if ((keyIsDown(LEFT_ARROW) || keyIsDown(65)) && this.atRightWall == false) {
             if (this.currentValues.xSpeed <= 0 && (this.direction == "STOP" || this.direction == "RIGHT")) {
                 this.direction = "LEFT";
                 this.marioDirection = [this.blockBoyStopLeft, this.blockBoyLeft];
@@ -269,7 +269,7 @@ class Character {
                 this.currentValues.xSpeed -= this.parameters.groundAcceleration;
             }
             //  MOVING AND STANDING RIGHT
-        } else if (keyIsDown(RIGHT_ARROW) && this.atLeftWall == false) {
+        } else if ((keyIsDown(RIGHT_ARROW) || keyIsDown(68)) && this.atLeftWall == false) {
             if (this.currentValues.xSpeed >= 0 && (this.direction == "STOP" || this.direction == "LEFT")) {
                 this.direction = "RIGHT";
                 this.marioDirection = [this.blockBoyStopRight, this.blockBoyRight];
@@ -303,12 +303,12 @@ class Character {
             }
         }
         // TRIGGER JUMP WHEN CONDITIONS ARE MET
-        if (keyIsDown(CONTROL) && this.jumping == false && this.onGround == true && this.jumpKeyReleased == true) {
+        if ((keyIsDown(CONTROL) || keyIsDown(32)) && this.jumping == false && this.onGround == true && this.jumpKeyReleased == true) {
             window.assets.sounds.jump[int(random(0, 3))].play();
             this.jump();
         }
         // UNSET THIS FLAG TO ALLOW JUMP ACTION TO BE PERFORMED AGAIN
-        if (!keyIsDown(CONTROL) && this.jumpKeyReleased == false) {
+        if ((!keyIsDown(CONTROL) && !keyIsDown(32)) && this.jumpKeyReleased == false) {
             this.jumpKeyReleased = true;
             console.log("Jump key released");
         }

@@ -38,8 +38,8 @@ function drawMenuScreen() {
     fill(0, 255, 0);
     textSize(20);
     text('How to play:', width / 2, 220);
-    let player1Instruction = "Player 1 - Use the arrow keys to move Block Boy left and right\n" +
-        "and the ctrl key to jump";
+    let player1Instruction = "Player 1 - Use the Arrow or WASD keys to move Block Boy left and right\n" +
+        "and the CTRL/SPACE key to jump";
     fill(255, 255, 0);
     text(player1Instruction, width / 2, 245);
     let player2Instruction = "Player 2 - Use the mouse to place blocks for Block Boy to stand on\n" +

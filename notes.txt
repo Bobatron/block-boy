@@ -128,3 +128,20 @@ Levels 25 - 30 - Angry Spikes & Everything & challenging
 
 IDEA: Red spikes that don't let you draw blocks around them
 ADDED
+
+
+Resizing the game
+
+When I resize the window I need the canvas to resize as well as all the objects within in
+not only the size i.e. block size
+but also the x:y co-ordinates need to factor in the new size
+I dont think this refactor is as straight forward as hoped
+I think maybe the grid logic might need to be refactored so that all objects can anchor to the grid as co-ordinates
+instead of objects having their own x:y values , they should just have grid locations
+
+ultimately i want to be able to resize
+and canvas, objects, physic, images, etc... will change accordingly
+
+at this point then it would be good to have the ability to change the number of blocks per row or column per level
+
+needs a bit of work this one, but worth it to make it more playable across devices.
